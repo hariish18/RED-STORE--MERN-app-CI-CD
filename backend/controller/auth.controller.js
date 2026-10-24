@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require("crypto");
 const cloudinary = require("../util/cloudinary");
 
-// forme commune renvoyee au frontend pour un user (jamais le mot de passe)
+// Common format returned to frontend for a user (never the password)
 const sanitizeUser = (user) => ({
     name: user.name,
     email: user.email,
@@ -16,14 +16,14 @@ const sanitizeUser = (user) => ({
     addresses: user.addresses,
 });
 
-//register = signup
+// register = signup
 exports.register = async (req, res) => {
     try {
-        //recoit la requete du frontend == submit du formulaire d'inscription
-        const { name, email, password } = req.body; //req apartir de frontend
-        //recherche de l'utilisateur par son email
+        // Receives request from frontend == signup form submit
+        const { name, email, password } = req.body;
+        // Search user by email
         const foundUser = await User.findOne({ email: email });
-        //si l'utilisateur existe déjà == email trouvé
+        // If user already exists
         if (foundUser) {
             return res.status(400).json({ message: "User already exists" });
         }
@@ -34,62 +34,51 @@ exports.register = async (req, res) => {
             imageProfile = result.secure_url;
             cloudinary_id = result.public_id;
         }
-        //email non trouvée
-        //creation selon le modéle
-        //le hash du mot de passe est fait automatiquement par le hook pre('save') du modele User
+        // Create user document according to model
+        // Password hashing is handled automatically by the pre('save') hook on User model
         const newUser = new User({ name, email, password, imageProfile, cloudinary_id });
-        //sauvgarde dans le BD 
+        // Save to database
         await newUser.save();
-        //token = JWT
+        // Token = JWT
         const token = jwt.sign({ id: newUser._id }, process.env.SECRET_KEY, { expiresIn: '2h' });
-        //response
+        // Response
         res.status(201).json({ message: "User registered successfully",  user: { name, email, imageProfile, cloudinary_id, role: newUser.role }, token });
     } catch (error) {
-        // detail complet cote serveur uniquement : le client garde un message
-        // generique pour ne pas exposer de details internes (schema, driver, etc.)
-        console.error("ERREUR REGISTER:", error);
+        // Full details logged on server only: client gets generic message to prevent leaking internal details
+        console.error("REGISTER ERROR:", error);
         res.status(500).json({ message: "Server error" });
     }
 };
-//login = signin
 
+// login = signin
 exports.login = async (req, res) => {
-
     try {
-        //req que jai recu du frontend == submit du formulaire de connexion   
+        // Request from frontend == login form submit
         const { email, password } = req.body;
-        //recherche par Email
+        // Search by email
         const foundUser = await User.findOne({ email: email });
-        //je ne trouve pas l'utilisateur
+        // User not found
         if (!foundUser) {
             return res.status(400).json({ message: "Invalid email or password " });
         }
 
-        //email correct mais le mot de passe est incorrect
+        // Compare password against hashed password
         const checkPassword = await bcrypt.compare(password, foundUser.password);
-        //si le mot de passe est incorrect
+        // If password is incorrect
         if (!checkPassword) return res.status(401).json({ message: "Invalid email or password " });
 
-
-
-        //token JWT
+        // JWT token
         const token = jwt.sign({ id: foundUser._id }, process.env.SECRET_KEY, { expiresIn: '2h' });
-        //response
+        // Response
         res.status(200).json({ message: "Login successful", user: { name: foundUser.name, email: foundUser.email, imageProfile: foundUser.imageProfile, cloudinary_id: foundUser.cloudinary_id, role: foundUser.role }, token });
-
-
-
-
     } catch (error) {
-        // detail complet cote serveur uniquement, meme raison qu'au register :
-        // le client garde un message generique pour ne pas exposer de details internes
-        console.error("ERREUR LOGIN:", error);
+        // Full details logged on server only: client gets generic message to prevent leaking internal details
+        console.error("LOGIN ERROR:", error);
         res.status(500).json({ message: "Server error" });
     }
-
 };
 
-//mise a jour des informations du profil (nom, email, telephone, mot de passe optionnel)
+// Update profile information (name, email, phone, optional password)
 exports.updateProfile = async (req, res) => {
     try {
         const { name, email, phone, password } = req.body;
@@ -106,7 +95,7 @@ exports.updateProfile = async (req, res) => {
             if (password.length < 6 || password.length > 32) {
                 return res.status(400).json({ message: "Password must be between 6 and 32 characters" });
             }
-            req.user.password = password; //hashe automatiquement par le hook pre('save') du modele
+            req.user.password = password; // Automatically hashed by the pre('save') hook of the model
         }
 
         await req.user.save();
@@ -116,7 +105,7 @@ exports.updateProfile = async (req, res) => {
     }
 };
 
-//ajoute une nouvelle adresse de livraison au profil
+// Adds a new delivery address to the profile
 exports.addAddress = async (req, res) => {
     try {
         const { label, fullName, address, city, postalCode, phone, isDefault } = req.body;
@@ -132,7 +121,7 @@ exports.addAddress = async (req, res) => {
     }
 };
 
-//modifie une adresse existante
+// Updates an existing address
 exports.updateAddress = async (req, res) => {
     try {
         const { addressId } = req.params;
@@ -158,7 +147,7 @@ exports.updateAddress = async (req, res) => {
     }
 };
 
-//supprime une adresse du profil
+// Deletes an address from the profile
 exports.deleteAddress = async (req, res) => {
     try {
         const { addressId } = req.params;
@@ -173,10 +162,10 @@ exports.deleteAddress = async (req, res) => {
     }
 };
 
-//demande de reset de mot de passe : genere un token temporaire (1h), envoie un email si un
-//service mail est configure (aucun ne l'est actuellement, voir CLAUDE.md), sinon logue le lien
-//en console pour le flux de dev. Repond toujours le meme message, que l'email existe ou non,
-//pour ne pas laisser un attaquant deviner quels emails sont enregistres
+// Password reset request: generates temporary token (1h), sends an email if a
+// mail service is configured (none currently configured, see CLAUDE.md), otherwise logs the link
+// in console for dev flow. Always returns the same message whether email exists or not,
+// to prevent attackers from enumerating registered emails
 exports.forgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
@@ -194,9 +183,8 @@ exports.forgotPassword = async (req, res) => {
         const resetLink = `${process.env.FRONTEND_URL || "http://localhost:5173"}/reset-password/${rawToken}`;
 
         if (process.env.SMTP_HOST) {
-            // aucun service mail configure dans ce projet (voir CLAUDE.md, backend/.env) :
-            // ce bloc est laisse en place pour brancher un vrai envoi plus tard sans retoucher
-            // le reste du flux.
+            // No mail service configured in this project (see CLAUDE.md, backend/.env):
+            // block left in place to connect real email delivery later without touching the rest of the flow.
         } else {
             console.log(`[dev] Password reset link for ${email}: ${resetLink}`);
         }
@@ -207,7 +195,7 @@ exports.forgotPassword = async (req, res) => {
     }
 };
 
-//applique le nouveau mot de passe si le token (recu par lien) est valide et non expire
+// Applies new password if token (received via link) is valid and non-expired
 exports.resetPassword = async (req, res) => {
     try {
         const { token } = req.params;
@@ -224,7 +212,7 @@ exports.resetPassword = async (req, res) => {
 
         if (!foundUser) return res.status(400).json({ message: "Invalid or expired reset link" });
 
-        foundUser.password = password; //hashe automatiquement par le hook pre('save') du modele
+        foundUser.password = password; // Automatically hashed by the pre('save') hook of the model
         foundUser.resetPasswordToken = undefined;
         foundUser.resetPasswordExpires = undefined;
         await foundUser.save();
@@ -235,7 +223,7 @@ exports.resetPassword = async (req, res) => {
     }
 };
 
-//liste des produits favoris de l'utilisateur connecte
+// List wishlist products for logged-in user
 exports.getWishlist = async (req, res) => {
     try {
         const populated = await req.user.populate("wishlist");
@@ -245,7 +233,7 @@ exports.getWishlist = async (req, res) => {
     }
 };
 
-//ajoute un produit aux favoris (idempotent)
+// Adds product to wishlist (idempotent)
 exports.addToWishlist = async (req, res) => {
     try {
         const { productId } = req.params;
@@ -262,7 +250,7 @@ exports.addToWishlist = async (req, res) => {
     }
 };
 
-//retire un produit des favoris
+// Removes product from wishlist
 exports.removeFromWishlist = async (req, res) => {
     try {
         const { productId } = req.params;

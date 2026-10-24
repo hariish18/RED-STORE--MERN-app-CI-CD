@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
-//trace serveur d'un paiement approuve : empeche un client de forger un transactionId
-//ou de rejouer le meme paiement pour plusieurs commandes (voir createOrder)
+// Server record of an approved payment: prevents a client from forging a transactionId
+// or replaying the same payment for multiple orders (see createOrder)
 const paymentIntentSchema = new mongoose.Schema(
     {
         transactionId: {
@@ -28,7 +28,7 @@ const paymentIntentSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-//nettoyage automatique des intents non utilises apres 30 minutes
+// Automatic cleanup of unused intents after 30 minutes
 paymentIntentSchema.index({ createdAt: 1 }, { expireAfterSeconds: 1800 });
 
 const PaymentIntent = mongoose.model("paymentIntent", paymentIntentSchema);

@@ -5,9 +5,8 @@ import ProductCard from "./ui/smoothui/product-card";
 import { cn } from "../lib/utils";
 import "../styles/tailwind-scoped.css";
 
-// Carrousel horizontal (scroll natif + scroll-snap) plutot qu'une librairie tierce : reutilise
-// ProductCard tel quel, reste leger, et le scroll au doigt/trackpad marche nativement en plus
-// des fleches.
+// Horizontal carousel (native scroll + scroll-snap) rather than a third-party library: reuses
+// ProductCard as-is, remains lightweight, and finger/trackpad scrolling works natively alongside arrows.
 function ProductCarousel({ products, emptyMessage = "No products found." }) {
     const shouldReduceMotion = useReducedMotion();
     const trackRef = useRef(null);
@@ -48,8 +47,8 @@ function ProductCarousel({ products, emptyMessage = "No products found." }) {
         );
     }
 
-    // Meme pattern d'orchestration que ProductGrid (variantes nommees, coupees sous
-    // prefers-reduced-motion) - voir ProductGrid.jsx pour le detail.
+    // Same orchestration pattern as ProductGrid (named variants, disabled under
+    // prefers-reduced-motion) - see ProductGrid.jsx for details.
     const containerVariants = {
         hidden: {},
         show: {
@@ -61,12 +60,12 @@ function ProductCarousel({ products, emptyMessage = "No products found." }) {
         show: { opacity: 1, transform: "translateY(0px) scale(1)" },
     };
 
-    // inset-y-0 + my-auto (plutot que top-[x%] + -translate-y-1/2) : le conteneur .relative a une
-    // hauteur "auto" (definie par son contenu flex), et les pourcentages de `top` ne se resolvent
-    // pas correctement sur un ancetre a hauteur auto - cette combinaison centre verticalement sans
-    // en dependre.
-    // !border-* : Bootstrap definit sa propre classe globale ".border" avec !important, qui
-    // gagne sinon sur la couleur de bordure Tailwind (voir le meme commentaire dans ProductCard).
+    // inset-y-0 + my-auto (rather than top-[x%] + -translate-y-1/2): the .relative container has an
+    // "auto" height (defined by its flex content), and `top` percentages do not resolve
+    // properly on an auto-height ancestor - this combination centers vertically without
+    // depending on it.
+    // !border-*: Bootstrap defines its own global ".border" class with !important, which
+    // would otherwise override the Tailwind border color (see same comment in ProductCard).
     const arrowClass =
         "absolute inset-y-0 my-auto z-10 flex h-10 w-10 items-center justify-center self-center rounded-full " +
         "border !border-gray-200 bg-white text-gray-700 shadow-md " +
@@ -76,9 +75,9 @@ function ProductCarousel({ products, emptyMessage = "No products found." }) {
 
     return (
         <div className="tw-scope">
-            {/* tw-scope doit etre sur un ANCETRE, jamais sur le meme noeud que les utilitaires
-                qu'il doit debloquer : `important: ".tw-scope"` compile en selecteur descendant
-                (`.tw-scope .relative`), donc `relative` sur CE div n'aurait aucun effet. */}
+            {/* tw-scope must be on an ANCESTOR, never on the same node as the utilities
+                it is meant to unlock: `important: ".tw-scope"` compiles into a descendant selector
+                (`.tw-scope .relative`), so `relative` on THIS div would have no effect. */}
             <div className="relative flex items-center">
                 <button
                     type="button"

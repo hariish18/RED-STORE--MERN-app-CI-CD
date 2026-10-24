@@ -4,16 +4,16 @@ import { EASE_SMOOTH } from '../utils/motion';
 import SectionHeading from './SectionHeading';
 import './Testimonials.css';
 
-// 3 variations de la meme famille chromatique (--color-primary) : un clair,
-// un moyen, un plein, plutot que des teintes non liees a la marque
+// 3 variations of the same chromatic family (--color-primary): light,
+// medium, full, rather than non-brand shades
 const AVATAR_STYLES = [
     { background: 'rgba(230, 57, 70, 0.10)', color: '#C1121F' },
     { background: 'rgba(230, 57, 70, 0.18)', color: '#E63946' },
     { background: '#C1121F', color: '#FDF2F3' },
 ];
 
-// formes decoratives en arriere-plan : mouvement tres lent et subtil,
-// desactive si l'utilisateur prefere moins de motion
+// Decorative background shapes: very slow and subtle movement,
+// disabled if user prefers reduced motion
 const BLOBS = [
     { className: 'testimonials__blob testimonials__blob--a', x: [0, 24, 0], y: [0, -20, 0], duration: 16 },
     { className: 'testimonials__blob testimonials__blob--b', x: [0, -22, 0], y: [0, 26, 0], duration: 20 },

@@ -1,5 +1,5 @@
-// Source unique pour la section "Why Choose Us" (WhyChooseUsSection.jsx),
-// partagee entre About.jsx et la Home pour ne jamais diverger sur le contenu.
+// Single source of truth for the "Why Choose Us" section (WhyChooseUsSection.jsx),
+// shared between About.jsx and the Home page to keep content in sync.
 import { Layers, Truck, ShieldCheck, Headphones } from 'lucide-react';
 
 export const WHY_CHOOSE_US = [

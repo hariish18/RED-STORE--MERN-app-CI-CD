@@ -33,15 +33,15 @@ const orderSchema = new mongoose.Schema(
         tax: { type: Number, required: true },
         shipping: { type: Number, required: true },
         total: { type: Number, required: true },
-        //rattache la commande a l'utilisateur connecte, si present (checkout invite sinon)
-        //ref "User" (majuscule) : doit matcher exactement mongoose.model('User', ...) dans
-        //model/User.js, sinon .populate('createdBy') echoue avec MissingSchemaError
+        // Associates order with logged-in user if present (guest checkout otherwise).
+        // ref "User" (uppercase): must match exactly mongoose.model('User', ...) in
+        // model/User.js, otherwise .populate('createdBy') fails with MissingSchemaError
         createdBy: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
         },
-        //statut de traitement/expedition de la commande (distinct de payment.status, qui ne
-        //suit que le paiement) - modifiable par un admin depuis le dashboard
+        // Order processing/shipping status (distinct from payment.status which only
+        // tracks payment) - modifiable by admin from dashboard
         status: {
             type: String,
             enum: ["pending", "processing", "shipped", "delivered", "cancelled"],
@@ -51,7 +51,7 @@ const orderSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-//index utilise par getMyOrders (page profil) qui filtre et trie sur ce champ
+// Index used by getMyOrders (profile page) which filters and sorts on these fields
 orderSchema.index({ createdBy: 1, createdAt: -1 });
 
 const Order = mongoose.model("order", orderSchema);

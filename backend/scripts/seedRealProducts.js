@@ -1,13 +1,12 @@
-// Script de seed permanent : insere le catalogue reel de Red Store - Shoes.
-// Idempotent (base sur l'URL exacte de imageProd) : relancer ce script ne cree
-// jamais de doublons et ne touche pas aux produits deja modifies manuellement
-// depuis leur creation.
+// Permanent seed script: inserts the real Red Store - Shoes catalog.
+// Idempotent (based on exact imageProd URL): re-running this script never creates
+// duplicates and leaves products modified manually since creation untouched.
 //
-// Ce script supprime d'abord l'ancien catalogue "sneakers" (Nike/Jordan) par
-// URL exacte, avant d'inserer le nouveau catalogue multi-categories.
+// This script first removes the legacy "sneakers" catalog (Nike/Jordan) by
+// exact URL, before inserting the new multi-category catalog.
 //
-// Usage : npm run seed:products   (depuis backend/)
-//     ou : node scripts/seedRealProducts.js
+// Usage: npm run seed:products   (from backend/)
+//    or: node scripts/seedRealProducts.js
 
 require("dotenv").config({ path: require("path").resolve(__dirname, "../.env") });
 
@@ -15,10 +14,9 @@ const mongoose = require("mongoose");
 const connectDB = require("../config/connectDB");
 const Product = require("../model/Product");
 
-// Ancien catalogue "sneakers" (Nike/Jordan) a retirer avant de repeupler.
-// Identifie par l'URL Cloudinary exacte de imageProd, pour ne supprimer que
-// ces 7 produits precis et ne pas toucher a d'eventuels produits ajoutes
-// manuellement depuis.
+// Legacy "sneakers" catalog (Nike/Jordan) to remove before repopulating.
+// Identified by exact Cloudinary imageProd URL to delete only these 7 specific
+// products without affecting any products added manually since.
 const legacyImageUrls = [
     "https://res.cloudinary.com/dvvekltxc/image/upload/v1783451934/COURT_BOROUGH_LOW_RECRAFT_TD_qnnos2.avif",
     "https://res.cloudinary.com/dvvekltxc/image/upload/v1783451944/GIANNIS_FREAK_7_aw7iuy.avif",
@@ -30,7 +28,7 @@ const legacyImageUrls = [
 ];
 
 const products = [
-    // --- Chaussures formelles / habillees ---
+    // --- Formal / dress shoes ---
     {
         title: "Clarks Tilden Cap",
         description: "Classic cap-toe derby in polished black leather, built on a cushioned Ortholite footbed for all-day comfort at the office.",
@@ -102,7 +100,7 @@ const products = [
         createdAt: new Date("2025-11-20"),
     },
 
-    // --- Chaussures casual ---
+    // --- Casual shoes ---
     {
         title: "Timberland Amherst Leather Boat Shoe",
         description: "Soft nubuck leather upper with a hand-sewn moc-toe and rawhide laces, a non-marking rubber outsole ready for the boat dock or a sunny weekend.",
@@ -173,7 +171,7 @@ const products = [
         createdAt: new Date("2026-01-28"),
     },
 
-    // --- Bottes ---
+    // --- Boots ---
     {
         title: "Timberland 6-Inch Premium Waterproof Boot",
         description: "The original waterproof leather boot with seam-sealed construction and anti-fatigue cushioning, built for rain, mud, and everything between.",
@@ -227,7 +225,7 @@ const products = [
         createdAt: new Date("2026-03-25"),
     },
 
-    // --- Sandales ---
+    // --- Sandals ---
     {
         title: "Birkenstock Arizona",
         description: "The classic two-strap sandal with a contoured cork-latex footbed that molds to your foot over time, adjustable buckles for a custom fit.",
@@ -280,7 +278,7 @@ const products = [
         createdAt: new Date("2026-05-20"),
     },
 
-    // --- Chaussures de sport techniques ---
+    // --- Athletic / sports shoes ---
     {
         title: "Adidas Predator Accuracy",
         description: "Technical firm-ground football boot with a soft synthetic upper for touch and control, built for players who dictate the game.",
@@ -499,7 +497,7 @@ const products = [
         createdAt: new Date("2026-09-18"),
     },
 
-    // --- Nouveautes (les 8 plus recents : alimentent la section "New Arrivals") ---
+    // --- New arrivals (8 most recent: powers "New Arrivals" section) ---
     {
         title: "Clarks Cognac Leather Zip Ankle Boot",
         description: "Cognac leather ankle boot with a stacked block heel, inner zip closure and a cushioned footbed, an easy everyday boot for jeans and everything in between.",
@@ -663,22 +661,22 @@ const products = [
 const seed = async () => {
     await connectDB();
 
-    // Retire l'ancien catalogue sneakers avant de repeupler
+    // Remove legacy sneakers catalog before repopulating
     const { deletedCount } = await Product.deleteMany({ imageProd: { $in: legacyImageUrls } });
-    console.log(`- ${deletedCount} ancien(s) produit(s) sneakers supprimé(s).`);
+    console.log(`- ${deletedCount} legacy sneaker product(s) deleted.`);
 
     let created = 0;
     let skipped = 0;
 
     for (const product of products) {
         try {
-            // Mongoose 9 a renomme l'ancienne option "rawResult" en
-            // "includeResultMetadata" pour findOneAndUpdate (l'ancien nom est
-            // silencieusement ignore et fait planter la detection insert/skip).
-            // "overwriteImmutable" est necessaire car le plugin timestamps de
-            // Mongoose remplace sinon silencieusement notre createdAt manuel
-            // (dans $setOnInsert) par la date du jour, ce qui rendrait
-            // ?sort=newest inutile puisque tous les produits auraient la meme date.
+            // Mongoose 9 renamed legacy "rawResult" option to
+            // "includeResultMetadata" for findOneAndUpdate (legacy name is
+            // silently ignored and breaks insert/skip detection).
+            // "overwriteImmutable" is needed because Mongoose timestamps plugin
+            // would otherwise silently replace our manual createdAt (in $setOnInsert)
+            // with current date, making ?sort=newest useless since all products
+            // would share the exact same timestamp.
             const result = await Product.findOneAndUpdate(
                 { imageProd: product.imageProd },
                 { $setOnInsert: product },
@@ -687,22 +685,22 @@ const seed = async () => {
 
             if (result.lastErrorObject?.updatedExisting) {
                 skipped += 1;
-                console.log(`- déjà présent, ignoré : ${product.title}`);
+                console.log(`- already present, skipped: ${product.title}`);
             } else {
                 created += 1;
-                console.log(`+ créé : ${product.title}`);
+                console.log(`+ created: ${product.title}`);
             }
         } catch (error) {
-            console.error(`✗ échec pour "${product.title}" :`, error.message);
+            console.error(`✗ failed for "${product.title}":`, error.message);
         }
     }
 
-    console.log(`\nTerminé : ${deletedCount} supprimé(s), ${created} créé(s), ${skipped} déjà présent(s).`);
+    console.log(`\nFinished: ${deletedCount} deleted, ${created} created, ${skipped} already present.`);
     await mongoose.disconnect();
     process.exit(0);
 };
 
 seed().catch((error) => {
-    console.error("Le seed a échoué :", error);
+    console.error("Seed failed:", error);
     process.exit(1);
 });

@@ -1,16 +1,15 @@
-// Script ponctuel : met a jour uniquement le champ imageProd de 4 produits
-// "men" deja en base (Clarks Tilden Cap, Ecco Melbourne Cap-Toe Oxford,
+// Utility script: updates only the imageProd field of 4 "men" products
+// already in database (Clarks Tilden Cap, Ecco Melbourne Cap-Toe Oxford,
 // Florsheim Kingston Moc-Toe, Frye Jackson Chelsea Boot).
 //
-// Les 7 autres produits "men" (Timberland Amherst Boat Shoe, Clarks Un
+// The other 7 "men" products (Timberland Amherst Boat Shoe, Clarks Un
 // Loafer, Timberland 6-Inch Waterproof Boot, Birkenstock Arizona,
-// Havaianas Top, Adidas Predator Accuracy, Puma RS-X Efekt) ne sont PAS
-// touches : leur image actuelle a ete revue et jugee deja correcte (ou,
-// pour Timberland 6-Inch, aucune alternative propre n'a ete trouvee).
+// Havaianas Top, Adidas Predator Accuracy, Puma RS-X Efekt) are NOT
+// modified: their existing images are already appropriate.
 //
-// Ne touche a aucun autre champ ni aucun autre produit.
+// Leaves all other fields and products untouched.
 //
-// Usage : node scripts/updateMenProductImages.js
+// Usage: node scripts/updateMenProductImages.js
 
 require("dotenv").config({ path: require("path").resolve(__dirname, "../.env") });
 
@@ -52,20 +51,20 @@ const updateImages = async () => {
 
         if (!product) {
             notFound += 1;
-            console.log(`- introuvable, ignore : ${title}`);
+            console.log(`- not found, skipped: ${title}`);
             continue;
         }
 
         updated += 1;
-        console.log(`+ ${title} : ${product.imageProd}`);
+        console.log(`+ ${title}: ${product.imageProd}`);
     }
 
-    console.log(`\nTermine : ${updated} produit(s) mis a jour, ${notFound} introuvable(s).`);
+    console.log(`\nFinished: ${updated} product(s) updated, ${notFound} not found.`);
     await mongoose.disconnect();
     process.exit(0);
 };
 
 updateImages().catch((error) => {
-    console.error("Le script a echoue :", error);
+    console.error("Script failed:", error);
     process.exit(1);
 });

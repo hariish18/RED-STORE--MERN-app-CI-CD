@@ -1,21 +1,21 @@
-# Mode par défaut : backend + frontend, base de données MongoDB Atlas (MONGODB_URI dans backend/.env).
+# Default mode: backend + frontend, MongoDB Atlas database (MONGODB_URI in backend/.env).
 #   docker compose up --build
-# Les variables ${...} ci-dessous sont lues depuis le fichier .env à la racine (voir .env.example).
+# The ${...} variables below are read from the .env file at the root (see .env.example).
 name: redstore
 
 services:
   backend:
     build: ./backend
-    image: lazher789/redstore-backend
+    image: YOUR_DOCKERHUB_USERNAME/redstore-backend
     env_file: backend/.env
     environment:
-      # Forcé ici pour rester cohérent avec BACKEND_URL du frontend, quelle que soit la valeur de backend/.env
+      # Forced here to stay consistent with the frontend BACKEND_URL, regardless of the backend/.env value
       PORT: "1980"
-      # Lien de réinitialisation de mot de passe : l'app est servie sur le port 8080
+      # Password-reset link: the app is served on port 8080
       FRONTEND_URL: ${FRONTEND_URL:-http://localhost:8080}
-      # Un seul proxy (Nginx) devant l'API en local
+      # Only one proxy (Nginx) in front of the API locally
       TRUST_PROXY: "1"
-    # Pas de port publié : l'API n'est joignable qu'à travers Nginx (http://localhost:8080/api)
+    # No published port: the API is only reachable through Nginx (http://localhost:8080/api)
     restart: unless-stopped
 
   frontend:
@@ -24,7 +24,7 @@ services:
       args:
         VITE_API_URL: ${VITE_API_URL:-}
         VITE_STRIPE_PUBLISHABLE_KEY: ${VITE_STRIPE_PUBLISHABLE_KEY:-}
-    image: lazher789/redstore-frontend
+    image: YOUR_DOCKERHUB_USERNAME/redstore-frontend
     ports:
       - "8080:80"
     environment:

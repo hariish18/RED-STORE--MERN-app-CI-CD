@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-// reset antd importe une seule fois et EN PREMIER : index.css et Bootstrap (BarNav) passent
-// apres et gardent la priorite, le reset ne change donc pas le rendu des autres pages
+// antd reset imported once and FIRST: index.css and Bootstrap (BarNav) come
+// after and keep priority, so the reset does not change the rendering of other pages
 import 'antd/dist/reset.css'
 import './index.css'
 import 'bootstrap/dist/css/bootstrap.min.css';

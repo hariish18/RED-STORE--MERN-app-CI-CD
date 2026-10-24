@@ -7,9 +7,9 @@ const { processPayment } = require("../controller/payment.controller");
 const router = express.Router();
 
 // POST /api/payment/create-payment-intent
-// Body: { totalPrice: number } — montant en dollars ; converti en centimes pour Stripe
-// optionalAuth (pas isAuth) : le checkout invite est supporte partout ailleurs (createOrder,
-// req.user?._id ci-dessous), isAuth ici bloquait a tort le paiement par carte des invites
+// Body: { totalPrice: number } — amount in dollars; converted to cents for Stripe
+// optionalAuth (not isAuth): guest checkout is supported everywhere else (createOrder,
+// req.user?._id below); isAuth here erroneously blocked guest card payments
 router.post("/create-payment-intent", optionalAuth, async (req, res) => {
     try {
         const totalPrice = Number(req.body.totalPrice ?? req.body.amount);
@@ -25,7 +25,7 @@ router.post("/create-payment-intent", optionalAuth, async (req, res) => {
             });
         }
 
-        // Conversion dollars → centimes (ex: 49.99 → 4999)
+        // Convert dollars → cents (e.g. 49.99 → 4999)
         const amountInCents = Math.round(totalPrice * 100);
 
         if (amountInCents < 50) {

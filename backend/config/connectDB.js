@@ -2,10 +2,10 @@
 const dns = require("dns");
 const mongoose = require("mongoose");
 
-// Sur certaines machines Windows, le service "Internet Connection Sharing" (ICS)
-// installe un proxy DNS local sur 127.0.0.1 que Node utilise par défaut, mais qui
-// ne répond pas correctement aux requêtes SRV (nécessaires pour mongodb+srv://).
-// On force donc des résolveurs publics fiables pour éviter ce proxy cassé.
+// On some Windows machines, "Internet Connection Sharing" (ICS)
+// installs a local DNS proxy on 127.0.0.1 that Node uses by default, but which
+// does not properly resolve SRV records (required for mongodb+srv://).
+// We force reliable public resolvers to bypass this broken proxy.
 if (dns.getServers().every((server) => server === "127.0.0.1" || server === "::1")) {
     dns.setServers(["8.8.8.8", "1.1.1.1"]);
 }
@@ -14,7 +14,7 @@ const RETRY_DELAYS_MS = [5000, 10000, 20000];
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-// Distingue les erreurs DNS/réseau des erreurs d'authentification pour faciliter le diagnostic
+// Distinguish DNS/network errors from auth errors to facilitate diagnosis
 const describeError = (error) => {
     const dnsErrorCodes = ["ENOTFOUND", "ECONNREFUSED", "EAI_AGAIN"];
     const isDnsError =
@@ -25,12 +25,12 @@ const describeError = (error) => {
         (error.code === 18 || /auth|authentication|bad auth/i.test(error.message));
 
     if (isDnsError) {
-        return "Erreur DNS/réseau : impossible de résoudre ou de joindre le cluster MongoDB Atlas (vérifier la connexion réseau/DNS, ou envisager le format mongodb:// sans SRV, voir backend/.env.example)";
+        return "DNS/network error: unable to resolve or reach MongoDB Atlas cluster (check network/DNS connection, or consider mongodb:// format without SRV, see backend/.env.example)";
     }
     if (isAuthError) {
-        return "Erreur d'authentification : identifiants MongoDB invalides (vérifier le nom d'utilisateur/mot de passe dans MONGODB_URI)";
+        return "Authentication error: invalid MongoDB credentials (check username/password in MONGODB_URI)";
     }
-    return "Erreur de connexion MongoDB non catégorisée";
+    return "Uncategorized MongoDB connection error";
 };
 
 const connectDB = async () => {
@@ -46,13 +46,13 @@ const connectDB = async () => {
             const isLastAttempt = attempt === RETRY_DELAYS_MS.length;
             if (isLastAttempt) {
                 console.error(
-                    `❌ Échec de connexion à MongoDB après ${RETRY_DELAYS_MS.length + 1} tentatives. Abandon.`
+                    `❌ Failed to connect to MongoDB after ${RETRY_DELAYS_MS.length + 1} attempts. Giving up.`
                 );
                 process.exit(1);
             }
 
             const delay = RETRY_DELAYS_MS[attempt];
-            console.warn(`⏳ Nouvelle tentative dans ${delay / 1000}s...`);
+            console.warn(`⏳ Retrying in ${delay / 1000}s...`);
             await wait(delay);
         }
     }

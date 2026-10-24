@@ -39,17 +39,17 @@ export default function NewArrivalsSection() {
         ? {}
         : { y: -6, boxShadow: '0 20px 40px rgba(230, 57, 70, 0.12)' };
 
-    // le bouton panier ne devine plus une pointure : il envoie vers la fiche
-    // produit, ou vit le vrai selecteur de taille (evite le bug "toujours 40")
+    // The cart button no longer guesses a size: it navigates to the product
+    // details page where the actual size selector lives (avoids "always size 40" bug)
     const handleQuickAdd = (event, product) => {
         event.preventDefault();
         event.stopPropagation();
         navigate(`/shop/${product._id}`);
     };
 
-    // empeche la navigation vers la page produit : preventDefault() annule la
-    // navigation de react-router (Link ne navigue pas si l'evenement est deja
-    // defaultPrevented), stopPropagation() isole le clic du reste de la card
+    // Prevents navigation to the product page: preventDefault() cancels
+    // react-router navigation (Link doesn't navigate if event is defaultPrevented),
+    // stopPropagation() isolates the click from the rest of the card
     const handleToggleWishlist = (event, product) => {
         event.preventDefault();
         event.stopPropagation();

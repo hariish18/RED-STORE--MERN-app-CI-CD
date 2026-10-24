@@ -1,11 +1,11 @@
 # Red Store — Shoes E-Commerce Platform
 
-[![CI/CD](https://github.com//APP-E-Commerce/actions/workflows/ci-cd.yml/badge.svg)](https://github.com//APP-E-Commerce/actions/workflows/ci-cd.yml)
-[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=benmassaoudlazher789-creator_APP-E-Commerce&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=benmassaoudlazher789-creator_APP-E-Commerce)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=benmassaoudlazher789-creator_APP-E-Commerce&metric=coverage)](https://sonarcloud.io/summary/new_code?id=benmassaoudlazher789-creator_APP-E-Commerce)
+[![CI/CD](https://github.com/YOUR_GITHUB_USERNAME/APP-E-Commerce/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/YOUR_GITHUB_USERNAME/APP-E-Commerce/actions/workflows/ci-cd.yml)
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=YOUR_SONAR_PROJECT_KEY&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=YOUR_SONAR_PROJECT_KEY)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=YOUR_SONAR_PROJECT_KEY&metric=coverage)](https://sonarcloud.io/summary/new_code?id=YOUR_SONAR_PROJECT_KEY)
 
-🌐 **Live demo:** https://stupendous-medovik-046a30.netlify.app  
-🔧 **API health:** https://redstore-backend-35r1.onrender.com/api/health
+🌐 **Live demo:** https://YOUR_FRONTEND_URL.netlify.app  
+🔧 **API health:** https://YOUR_BACKEND_URL.onrender.com/api/health
 
 Red Store is a full-stack **MERN** e-commerce platform for selling shoes. It features a Men / Women / Kids catalog with filters, live search, a wishlist, a per-user persistent cart, a multi-step checkout with **Stripe** payments, and an **admin dashboard** for managing products and orders.
 
@@ -124,7 +124,7 @@ The repository contains **two independent npm projects**. There is no root `pack
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com//APP-E-Commerce.git
+git clone https://github.com/YOUR_GITHUB_USERNAME/APP-E-Commerce.git
 cd APP-E-Commerce
 ```
 
@@ -212,7 +212,7 @@ node scripts/setUserRole.js you@example.com admin  # promote your account to adm
 
 ## Docker
 
-The app ships as two images: `lazher789/redstore-backend` (Express API) and `lazher789/redstore-frontend` (Nginx serving the Vite build and proxying `/api/*` to the backend). Only Nginx is exposed, at **http://localhost:8080**.
+The app ships as two images: `YOUR_DOCKERHUB_USERNAME/redstore-backend` (Express API) and `YOUR_DOCKERHUB_USERNAME/redstore-frontend` (Nginx serving the Vite build and proxying `/api/*` to the backend). Only Nginx is exposed, at **http://localhost:8080**.
 
 ### Prerequisites
 
@@ -317,8 +317,8 @@ Blue jobs run on pushes **and** pull requests; the others run on pushes to `main
 | `check-backend` | push + pull request | Node 22 (npm cache + cached `mongod` binary): `npm ci`, `npm run test:coverage` (Jest, in-memory MongoDB, `lcov.info` uploaded as the `backend-coverage` artifact), `node --check` on every `.js` file, then loads every config/util/model/middleware/controller/route module (no database needed) |
 | `snyk` | push + pull request | Snyk scan of the `backend/` and `frontend/` npm dependencies, fails on `high` or above. Skipped with a notice if `SNYK_TOKEN` isn't set |
 | `sonarqube` | push + pull request, after the 3 jobs above | SonarQube Cloud analysis of `backend/` and `frontend/src`, with backend test coverage from the `backend-coverage` artifact (config in [`sonar-project.properties`](sonar-project.properties)). Skipped with a notice if `SONAR_TOKEN` isn't set |
-| `docker-backend` | push only, after `sonarqube` | Builds and pushes `lazher789/redstore-backend`, tagged with the **short commit SHA only**, with `APP_VERSION=<short SHA>` as build arg (returned by `/api/health`). GitHub Actions Buildx cache (`redstore-backend` scope) |
-| `docker-frontend` | push only, after `sonarqube` | Same for `lazher789/redstore-frontend`, with the `VITE_STRIPE_PUBLISHABLE_KEY` build arg (`redstore-frontend` cache scope) |
+| `docker-backend` | push only, after `sonarqube` | Builds and pushes `YOUR_DOCKERHUB_USERNAME/redstore-backend`, tagged with the **short commit SHA only**, with `APP_VERSION=<short SHA>` as build arg (returned by `/api/health`). GitHub Actions Buildx cache (`redstore-backend` scope) |
+| `docker-frontend` | push only, after `sonarqube` | Same for `YOUR_DOCKERHUB_USERNAME/redstore-frontend`, with the `VITE_STRIPE_PUBLISHABLE_KEY` build arg (`redstore-frontend` cache scope) |
 | `trivy-scan` | push only, after both image jobs | Trivy scans both SHA-tagged images. The HIGH + CRITICAL report is published in the job summary; the job fails on any **fixable CRITICAL** vulnerability |
 | `deploy` | push only, after `trivy-scan` | Adds the `latest` tag to both scanned images with `docker buildx imagetools create` (no rebuild), then calls the Render Deploy Hooks. If a hook secret isn't set yet, the job prints a notice and still succeeds |
 | `smoke-test` | push only, after `deploy` | Checks the live Render deployment through the frontend URL (see [Health check & smoke test](#health-check--smoke-test)). Skipped with a notice if a Render hook secret isn't set |
@@ -357,7 +357,7 @@ It is reachable directly on the backend and through the frontend Nginx proxy (`/
 
 After `deploy`, the `smoke-test` job:
 
-1. polls `https://redstore-frontend-tmxu.onrender.com/api/health` every 15 s, for up to 8 minutes (free Render services sleep and wake up slowly), until `version` equals the commit's short SHA and `db` is `"up"`
+1. polls `https://YOUR_FRONTEND_URL.onrender.com/api/health` every 15 s, for up to 8 minutes (free Render services sleep and wake up slowly), until `version` equals the commit's short SHA and `db` is `"up"`
 2. then checks that `/` and `/cart` (SPA fallback) answer `200` with HTML, and `/api/product/allProd` answers `200` with JSON
 3. fails with an explicit error annotation if a check fails, and writes a results table in the job summary
 
@@ -379,58 +379,58 @@ The other files in this folder are one-off data-maintenance scripts (image and c
 
 ## Author
 
-**Lazher Ben Massaoud**
+**YOUR_NAME**
 
-- GitHub: [@benmassaoudlazher789-creator](https://github.com/benmassaoudlazher789-creator)
-- LinkedIn: [Lazher Ben Massaoud](https://www.linkedin.com/in/ben-massaoud-lazher/) <!-- TODO: replace with your LinkedIn URL -->
+- GitHub: [@YOUR_GITHUB_USERNAME](https://github.com/YOUR_GITHUB_USERNAME)
+- LinkedIn: [YOUR_NAME](https://www.linkedin.com/in/YOUR_LINKEDIN/)
 
 ## Rollback
 
-En cas de problème en production, voici la procédure testée de rollback.
+In case of a production issue, here is the tested rollback procedure.
 
 ### Backend (Render)
 
-1. Va sur [dashboard.render.com](https://dashboard.render.com) → `redstore-backend`
-2. Onglet **Deploys**
-3. Trouve le dernier deploy **stable** (avant le problème)
-4. Clique sur **"Rollback"** à droite du deploy
-5. Confirme dans la popup
-6. Attends 20-30 sec
-7. Vérifie : `curl https://redstore-backend-35r1.onrender.com/api/health`
-   → `version` doit être l'ancien SHA
+1. Go to [dashboard.render.com](https://dashboard.render.com) → `redstore-backend`
+2. **Deploys** tab
+3. Find the last **stable** deploy (before the issue)
+4. Click **"Rollback"** to the right of that deploy
+5. Confirm in the popup
+6. Wait 20–30 sec
+7. Verify: `curl https://YOUR_BACKEND_URL.onrender.com/api/health`
+   → `version` should be the old SHA
 
-⚠️ **Note** : après un rollback, Render désactive "Auto-Deploy".
-Réactive-le dans Settings → Auto-Deploy.
+⚠️ **Note**: after a rollback, Render disables "Auto-Deploy".
+Re-enable it in Settings → Auto-Deploy.
 
 ### Frontend (Netlify)
 
-1. Va sur [app.netlify.com](https://app.netlify.com) → ton site
-2. Onglet **Deploys**
-3. Trouve le dernier deploy **stable**
-4. Clique sur **"Publish deploy"**
-5. Attends 1-2 min
+1. Go to [app.netlify.com](https://app.netlify.com) → your site
+2. **Deploys** tab
+3. Find the last **stable** deploy
+4. Click **"Publish deploy"**
+5. Wait 1–2 min
 
-### Base de données (MongoDB Atlas)
+### Database (MongoDB Atlas)
 
-⚠️ **Attention** : le restore écrase les données actuelles.
+⚠️ **Warning**: restore overwrites current data.
 
-1. Va sur [cloud.mongodb.com](https://cloud.mongodb.com)
+1. Go to [cloud.mongodb.com](https://cloud.mongodb.com)
 2. Cluster → **Backup**
-3. Trouve un snapshot antérieur
-4. **Restore** → cluster cible
-5. Confirme
+3. Find an earlier snapshot
+4. **Restore** → target cluster
+5. Confirm
 
-### Vérification post-rollback
+### Post-rollback verification
 
-1. `https://redstore-backend-35r1.onrender.com/api/health` → `status: ok`
-2. `https://stupendous-medovik-046a30.netlify.app` → site charge
-3. UptimeRobot → monitor vert
-4. Grafana → metrics arrivent
+1. `https://YOUR_BACKEND_URL.onrender.com/api/health` → `status: ok`
+2. `https://YOUR_FRONTEND_URL.netlify.app` → site loads
+3. UptimeRobot → monitor green
+4. Grafana → metrics arriving
 ## Kubernetes (Minikube)
 
-Le projet inclut des manifests Kubernetes dans `k8s/` pour déployer l'application sur un cluster local.
+The project includes Kubernetes manifests in `k8s/` to deploy the application on a local cluster.
 
-### Déploiement
+### Deployment
 
 ```bash
 minikube start --driver=docker
@@ -438,4 +438,4 @@ kubectl create secret generic redstore-secrets --from-env-file=.env.k8s
 kubectl apply -f k8s/
 kubectl get pods
 kubectl port-forward service/redstore-frontend 8090:80
-# Ouvrir http://localhost:8090
+# Open http://localhost:8090

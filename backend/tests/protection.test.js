@@ -4,21 +4,21 @@ const app = require("../app");
 const cloudinary = require("../util/cloudinary");
 const { createUser, tokenFor } = require("./helpers");
 
-describe("Routes protégées (isAuth)", () => {
-    it("refuse l'accès sans token", async () => {
+describe("Protected routes (isAuth)", () => {
+    it("rejects access without token", async () => {
         const res = await request(app).get("/api/auth/current");
 
         expect(res.status).toBe(403);
         expect(res.body.message).toBe("No token provided");
     });
 
-    it("refuse un token invalide", async () => {
+    it("rejects an invalid token", async () => {
         const res = await request(app).get("/api/auth/current").set("authorization", "not-a-jwt");
 
         expect(res.status).toBe(401);
     });
 
-    it("refuse un token signé avec une autre clé", async () => {
+    it("rejects a token signed with a different key", async () => {
         const user = await createUser();
         const forged = jwt.sign({ id: user._id }, "another-key");
 
@@ -27,7 +27,7 @@ describe("Routes protégées (isAuth)", () => {
         expect(res.status).toBe(401);
     });
 
-    it("refuse un token dont l'utilisateur n'existe plus", async () => {
+    it("rejects a token whose user no longer exists", async () => {
         const user = await createUser();
         const token = tokenFor(user);
         await user.deleteOne();
@@ -37,21 +37,21 @@ describe("Routes protégées (isAuth)", () => {
         expect(res.status).toBe(404);
     });
 
-    it("refuse le panier sans token", async () => {
+    it("rejects cart access without token", async () => {
         const res = await request(app).get("/api/cart");
 
         expect(res.status).toBe(403);
     });
 });
 
-describe("Routes admin (isAuth + isRole('admin'))", () => {
-    it("refuse /api/admin/stats sans token", async () => {
+describe("Admin routes (isAuth + isRole('admin'))", () => {
+    it("rejects /api/admin/stats without token", async () => {
         const res = await request(app).get("/api/admin/stats");
 
         expect(res.status).toBe(403);
     });
 
-    it("refuse /api/admin/stats à un utilisateur non admin", async () => {
+    it("rejects /api/admin/stats for non-admin user", async () => {
         const client = await createUser({ role: "client" });
 
         const res = await request(app).get("/api/admin/stats").set("authorization", tokenFor(client));
@@ -60,19 +60,19 @@ describe("Routes admin (isAuth + isRole('admin'))", () => {
         expect(res.body.message).toBe("Access denied: insufficient role");
     });
 
-    it("refuse l'ajout de produit à un non admin, sans aucun upload Cloudinary", async () => {
+    it("rejects product creation for non-admin, without any Cloudinary upload", async () => {
         const client = await createUser({ role: "client" });
 
         const res = await request(app)
             .post("/api/product/addProd")
             .set("authorization", tokenFor(client))
-            .send({ title: "Intrus", price: 1 });
+            .send({ title: "Intruder", price: 1 });
 
         expect(res.status).toBe(403);
         expect(cloudinary.uploader.upload).not.toHaveBeenCalled();
     });
 
-    it("refuse la suppression de produit à un non admin", async () => {
+    it("rejects product deletion for non-admin", async () => {
         const client = await createUser({ role: "client" });
 
         const res = await request(app)
@@ -82,7 +82,7 @@ describe("Routes admin (isAuth + isRole('admin'))", () => {
         expect(res.status).toBe(403);
     });
 
-    it("autorise un admin sur /api/admin/stats", async () => {
+    it("allows an admin on /api/admin/stats", async () => {
         const admin = await createUser({ role: "admin" });
 
         const res = await request(app).get("/api/admin/stats").set("authorization", tokenFor(admin));

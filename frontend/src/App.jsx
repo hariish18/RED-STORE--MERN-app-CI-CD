@@ -38,16 +38,16 @@ function App() {
       <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
 
       {/* 
-         ⭐️ MODIFICATION ICI : 
-         On enlève <BarNav /> d'ici pour qu'elle soit gérée 
-         page par page dans les <Routes>.
+         ⭐️ CHANGE HERE: 
+         Removed <BarNav /> from here so it is managed 
+         page by page inside the <Routes>.
       */}
 
       <main>
         <AnimatePresence mode="wait">
           <Routes location={location} key={location.pathname}>
 
-            {/* ⭐️ PAGE D'ACCUEIL : On inclut la BarNav à l'intérieur du Home */}
+            {/* ⭐️ HOME PAGE: BarNav is included inside the Home layout */}
             <Route path="/" element={
               <PageTransition>
                 <div className="home-layout">
@@ -57,7 +57,7 @@ function App() {
               </PageTransition>
             } />
 
-            {/* ⭐️ AUTRES PAGES : On met la BarNav avant, comme avant */}
+            {/* ⭐️ OTHER PAGES: BarNav is placed before, as before */}
             <Route path="/shop" element={
               <PageTransition>
                 <>

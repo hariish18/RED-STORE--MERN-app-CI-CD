@@ -8,12 +8,12 @@ import WhyChooseUsSection from '../components/WhyChooseUsSection';
 import StatsSection from '../components/StatsSection';
 import Footer from '../components/Footer';
 
-// Fait defiler jusqu'a la section visee par le hash de l'URL (ex. "/#new-arrivals").
-// react-router ne le fait pas tout seul, et la page arrive avec une transition
-// (PageTransition) : la section n'existe pas encore au premier rendu quand on
-// vient d'une autre page, d'ou la petite boucle d'attente.
-// location.key est dans les dependances pour re-scroller quand on reclique sur le
-// meme lien alors que le hash est deja dans l'URL.
+// Scrolls to the section targeted by the URL hash (e.g. "/#new-arrivals").
+// react-router does not handle this automatically, and the page arrives with a transition
+// (PageTransition): the section does not exist yet on the first render when coming
+// from another page, hence the small waiting loop.
+// location.key is in the dependencies to re-scroll when clicking the
+// same link again while the hash is already in the URL.
 function useScrollToHash() {
     const { hash, key } = useLocation();
 

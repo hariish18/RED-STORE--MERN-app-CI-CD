@@ -162,8 +162,8 @@
     color: var(--color-text-secondary);
 }
 
-/* meme rythme que les sections de la Home ("Shop by Category") : --space-8 au-dessus,
-   SectionHeading (--space-4 sous le titre) et meme gap que la grille Shop */
+/* Same spacing rhythm as Home sections ("Shop by Category"): --space-8 above,
+   SectionHeading (--space-4 under title) and same gap as Shop grid */
 .product-detail__related {
     margin-top: var(--space-8);
 }

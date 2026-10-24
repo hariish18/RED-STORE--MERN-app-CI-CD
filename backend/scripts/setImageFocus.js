@@ -1,12 +1,11 @@
-// Script ponctuel : definit le point focal (imageFocus) des produits dont la photo
-// principale est une mise en scene, pour que les miniatures recadrees (panier)
-// montrent la chaussure plutot que le decor. Idempotent.
+// Utility script: sets focal point (imageFocus) for products whose main photo
+// is staged, so cropped thumbnails (cart) show the shoe rather than the decor. Idempotent.
 //
-// x / y = position du produit dans imageProd, en % (0 = gauche/haut) ; zoom >= 1.
-// Valeurs mesurees sur la photo : pour l'Adidas Predator, la chaussure est a droite
-// du ballon (centre ~63% / 51%) et occupe ~45% de la largeur.
+// x / y = position of product in imageProd, in % (0 = left/top); zoom >= 1.
+// Values measured from photo: for Adidas Predator, shoe is to the right
+// of the ball (center ~63% / 51%) and occupies ~45% of width.
 //
-// Usage : node scripts/setImageFocus.js   (depuis backend/)
+// Usage: node scripts/setImageFocus.js   (from backend/)
 
 require("dotenv").config({ path: require("path").resolve(__dirname, "../.env") });
 
@@ -23,7 +22,7 @@ const setImageFocus = async () => {
 
     for (const { title, imageFocus } of focusByTitle) {
         const result = await Product.updateOne({ title }, { $set: { imageFocus } });
-        console.log(result.matchedCount ? `+ ${title} : ${JSON.stringify(imageFocus)}` : `- introuvable, ignore : ${title}`);
+        console.log(result.matchedCount ? `+ ${title}: ${JSON.stringify(imageFocus)}` : `- not found, skipped: ${title}`);
     }
 
     await mongoose.disconnect();

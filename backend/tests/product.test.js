@@ -4,7 +4,7 @@ const Product = require("../model/Product");
 
 const sampleProduct = (overrides = {}) => ({
     title: "Air Test",
-    description: "Chaussure de test",
+    description: "Test shoe",
     price: 99.99,
     brand: "TestBrand",
     gender: "men",
@@ -12,7 +12,7 @@ const sampleProduct = (overrides = {}) => ({
 });
 
 describe("GET /api/product/allProd", () => {
-    it("répond 200 avec un tableau vide quand il n'y a aucun produit", async () => {
+    it("responds 200 with an empty array when there are no products", async () => {
         const res = await request(app).get("/api/product/allProd");
 
         expect(res.status).toBe(200);
@@ -21,7 +21,7 @@ describe("GET /api/product/allProd", () => {
         expect(res.body.Prod).toHaveLength(0);
     });
 
-    it("renvoie les produits enregistrés", async () => {
+    it("returns registered products", async () => {
         await Product.create([sampleProduct(), sampleProduct({ title: "Runner Test", gender: "women" })]);
 
         const res = await request(app).get("/api/product/allProd");
@@ -31,7 +31,7 @@ describe("GET /api/product/allProd", () => {
         expect(res.body.Prod.map((p) => p.title).sort()).toEqual(["Air Test", "Runner Test"]);
     });
 
-    it("filtre par genre et applique la limite", async () => {
+    it("filters by gender and applies limit", async () => {
         await Product.create([
             sampleProduct({ title: "A" }),
             sampleProduct({ title: "B" }),
@@ -47,7 +47,7 @@ describe("GET /api/product/allProd", () => {
 });
 
 describe("GET /api/product/prod/:id", () => {
-    it("renvoie un produit existant", async () => {
+    it("returns an existing product", async () => {
         const product = await Product.create(sampleProduct());
 
         const res = await request(app).get(`/api/product/prod/${product._id}`);

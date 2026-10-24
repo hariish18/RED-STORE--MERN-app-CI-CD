@@ -1,17 +1,16 @@
-// Script ponctuel : marque une selection de produits deja seedes comme etant
-// en promotion, pour peupler la page "Sale".
+// Utility script: marks a selection of seeded products as on sale
+// to populate the "Sale" page.
 //
-// Ne touche jamais a "price" (le prix de vente actuel reste inchange) : on se
-// contente d'ajouter un originalPrice superieur (prix barre) et un
-// discountPercentage coherent, puis isOnSale: true. Idempotent : relancer ce
-// script met simplement a jour les memes produits avec les memes valeurs.
+// Never touches "price" (current selling price remains unchanged):
+// simply adds a higher originalPrice (strikethrough price), a consistent
+// discountPercentage, and isOnSale: true. Idempotent: re-running this
+// script updates the same products with the same values.
 //
-// Cible par "title" (contrairement a seedRealProducts.js qui cible par
-// imageProd) car c'est ici le moyen le plus lisible de designer des produits
-// deja en base.
+// Targets products by "title" (unlike seedRealProducts.js which targets
+// imageProd) because title is the most readable identifier for existing products.
 //
-// Usage : npm run seed:sale   (depuis backend/)
-//     ou : node scripts/markProductsOnSale.js
+// Usage: npm run seed:sale   (from backend/)
+//    or: node scripts/markProductsOnSale.js
 
 require("dotenv").config({ path: require("path").resolve(__dirname, "../.env") });
 
@@ -19,8 +18,8 @@ const mongoose = require("mongoose");
 const connectDB = require("../config/connectDB");
 const Product = require("../model/Product");
 
-// originalPrice choisi "rond" au-dessus du price actuel ; discountPercentage
-// recalcule a partir de l'ecart reel entre originalPrice et price (15-40%).
+// originalPrice chosen as round number above current price; discountPercentage
+// recalculated from actual gap between originalPrice and price (15-40%).
 const salesByTitle = [
     { title: "Clarks Tilden Cap", originalPrice: 189 },
     { title: "Timberland Amherst Leather Boat Shoe", originalPrice: 99 },
@@ -42,7 +41,7 @@ const markOnSale = async () => {
         const product = await Product.findOne({ title });
         if (!product) {
             notFound += 1;
-            console.log(`- introuvable, ignore : ${title}`);
+            console.log(`- not found, skipped: ${title}`);
             continue;
         }
 
@@ -54,15 +53,15 @@ const markOnSale = async () => {
         );
 
         updated += 1;
-        console.log(`+ ${title} : ${product.price}€ (barre ${originalPrice}€, -${discountPercentage}%)`);
+        console.log(`+ ${title}: $${product.price} (original $${originalPrice}, -${discountPercentage}%)`);
     }
 
-    console.log(`\nTermine : ${updated} produit(s) mis en promo, ${notFound} introuvable(s).`);
+    console.log(`\nFinished: ${updated} product(s) marked on sale, ${notFound} not found.`);
     await mongoose.disconnect();
     process.exit(0);
 };
 
 markOnSale().catch((error) => {
-    console.error("Le script a echoue :", error);
+    console.error("Script failed:", error);
     process.exit(1);
 });

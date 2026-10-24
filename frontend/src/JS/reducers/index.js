@@ -5,7 +5,7 @@ import cartReducer from "./cartReducer";
 import orderReducer from "./orderReducer";
 import paymentReducer from "./paymentReducer";
 import wishlistReducer from "./wishlistReducer";
-//combiner les reducers
+// Combine reducers
 const rootReducer = combineReducers({
     authReducer,
     productReducer,

@@ -13,7 +13,7 @@ const authConfig = () => ({
     headers: { authorization: localStorage.getItem("token") },
 });
 
-// recupere la wishlist du user connecte (produits peuples, pas juste des ids)
+// fetches the wishlist of the logged-in user (populated products, not just IDs)
 export const getWishlist = () => async (dispatch) => {
     dispatch({ type: LOAD_WISHLIST });
     try {
@@ -24,8 +24,8 @@ export const getWishlist = () => async (dispatch) => {
     }
 };
 
-// ajoute un produit (deja disponible cote client, ex. depuis ProductCard) - mise a jour
-// optimiste immediate, l'appel serveur suit derriere
+// adds a product (already available client-side, e.g. from ProductCard) - optimistic
+// immediate update, the server call follows behind
 export const addToWishlist = (product) => async (dispatch) => {
     dispatch({ type: ADD_WISHLIST_ITEM, payload: product });
     try {

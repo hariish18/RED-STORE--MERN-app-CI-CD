@@ -10,6 +10,6 @@ dist
 Dockerfile
 .dockerignore
 
-# Tests et rapports de couverture : inutiles dans l'image de production
+# Tests and coverage reports: unneeded in the production image
 tests
 coverage

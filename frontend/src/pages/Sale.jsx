@@ -8,9 +8,9 @@ import { addToWishlist, removeFromWishlist } from '../JS/actions/wishlist.action
 import { EASE_SMOOTH, SPRING_BOUNCY } from '../utils/motion';
 import { formatPrice } from '../utils/format';
 import SectionHeading from '../components/SectionHeading';
-// reutilise le style des cards (image wrapper, badge, wishlist, skeleton...)
-// deja defini pour "New Arrivals" : Sale.css n'ajoute que ce qui est specifique
-// a cette page (layout, sous-titre, badge de reduction, prix barre).
+// reuses the card styles (image wrapper, badge, wishlist, skeleton...)
+// already defined for "New Arrivals": Sale.css only adds what is specific
+// to this page (layout, subtitle, discount badge, strikethrough price).
 import '../components/NewArrivalsSection.css';
 import './Sale.css';
 

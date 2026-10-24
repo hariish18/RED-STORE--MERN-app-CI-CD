@@ -8,10 +8,10 @@ import {
 
 import { API_URL } from "../../utils/api";
 
-// Le paiement est traite cote serveur (/api/payment/process) plutot que simule dans le
-// navigateur, pour qu'un client ne puisse pas forger un succes. Aucune cle Stripe n'est
-// configuree cote backend non plus : le controller simule une passerelle (meme carte de
-// test "toujours refusee"), mais le resultat est authoritatif cote serveur.
+// Payment is processed server-side (/api/payment/process) rather than simulated in the
+// browser, so a client cannot forge a success. No Stripe key is configured on the
+// backend either: the controller simulates a gateway (even the "always declined" test
+// card), but the result is authoritative server-side.
 export const processPayment = (paymentDetails, amount) => async (dispatch) => {
     dispatch({ type: PAYMENT_LOADING });
     try {

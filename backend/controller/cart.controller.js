@@ -1,9 +1,9 @@
 const Cart = require("../model/Cart");
 const Product = require("../model/Product");
 
-//recupere le panier de l'utilisateur connecte (tableau vide si aucun panier encore sauvegarde)
-//le stock de chaque article est rafraichi depuis le produit reel, pour ne pas afficher une
-//disponibilite perimee (l'article a pu etre vendu ailleurs depuis son ajout au panier)
+// Retrieves cart of authenticated user (empty array if no cart saved yet)
+// The stock for each item is refreshed from the actual product to avoid displaying
+// outdated availability (item might have been sold elsewhere since being added to cart)
 exports.getCart = async (req, res) => {
     try {
         const cart = await Cart.findOne({ user: req.user._id });
@@ -12,8 +12,8 @@ exports.getCart = async (req, res) => {
         if (items.length > 0) {
             const products = await Product.find({ _id: { $in: items.map((i) => i.productId) } });
             const productsById = new Map(products.map((p) => [p.id, p]));
-            //objets simples (toObject) : un champ hors schema (stock, imageFocus) pose sur un
-            //sous-document Mongoose est ignore a la serialisation JSON et n'arrivait jamais au client
+            // Plain objects (toObject): non-schema fields (stock, imageFocus) placed on
+            // Mongoose subdocument are ignored during JSON serialization and never reached client
             items = items.map((item) => {
                 const product = productsById.get(String(item.productId));
                 const sizeEntry = product?.sizes.find((s) => s.size === item.size);
@@ -38,7 +38,7 @@ exports.getCart = async (req, res) => {
 const calcTotalPrice = (items) =>
     items.reduce((sum, i) => sum + (i.price || 0) * i.quantity, 0);
 
-// ajoute ou met a jour la quantite d'un article (quantity negative pour decrementer)
+// Adds or updates item quantity (negative quantity to decrement)
 exports.addToCart = async (req, res) => {
     try {
         const { productId, quantity = 1, size } = req.body;
@@ -106,7 +106,7 @@ exports.addToCart = async (req, res) => {
     }
 };
 
-// retire un article du panier (size optionnelle en query)
+// Removes an item from cart (optional size in query)
 exports.removeFromCart = async (req, res) => {
     try {
         const { productId } = req.params;
@@ -131,7 +131,7 @@ exports.removeFromCart = async (req, res) => {
     }
 };
 
-//remplace entierement le panier de l'utilisateur connecte (upsert)
+// Entirely replaces cart of authenticated user (upsert)
 exports.saveCart = async (req, res) => {
     try {
         const { items } = req.body;
@@ -155,7 +155,7 @@ exports.saveCart = async (req, res) => {
     }
 };
 
-//vide le panier de l'utilisateur connecte
+// Clears cart of authenticated user
 exports.clearCart = async (req, res) => {
     try {
         await Cart.findOneAndUpdate(

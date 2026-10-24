@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
-// adresse de livraison enregistree dans le profil de l'utilisateur
+// Delivery address stored in user profile
 const addressSchema = new mongoose.Schema({
     label: {
         type: String,
@@ -42,25 +42,25 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "../images/image.jpg",
     },
-     cloudinary_id: String,
-    //role de l'utilisateur : "client" par defaut, "admin" pour acceder au dashboard
-    //(remplace l'ancien champ isAdmin, jamais utilise pour du controle d'acces reel)
+    cloudinary_id: String,
+    // User role: "client" by default, "admin" to access dashboard
+    // (replaces legacy isAdmin field, which was never used for real access control)
     role: {
         type: String,
         enum: ["client", "admin"],
         default: "client",
     },
     addresses: [addressSchema],
-    //produits favoris de l'utilisateur (wishlist)
+    // User favorite products (wishlist)
     wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "product" }],
-    //reset de mot de passe : seul le hash du token est stocke, jamais le token en clair
-    //(envoye/logue une seule fois, voir auth.controller.js#forgotPassword)
+    // Password reset: only hashed token is stored, never plain token
+    // (sent/logged once only, see auth.controller.js#forgotPassword)
     resetPasswordToken: { type: String, select: false },
     resetPasswordExpires: { type: Date, select: false },
 }, { timestamps: true });
 
-//hash automatique du mot de passe avant sauvegarde, uniquement s'il a change
-//(evite de re-hasher un hash deja existant a chaque save())
+// Automatic password hashing before save, only if modified
+// (prevents re-hashing an existing hash on every save())
 userSchema.pre('save', async function () {
     if (!this.isModified('password')) return;
     this.password = await bcrypt.hash(this.password, 10);

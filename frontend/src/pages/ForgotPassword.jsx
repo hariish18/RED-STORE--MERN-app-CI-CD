@@ -24,23 +24,23 @@ function ForgotPassword() {
             <Card style={{ width: 400, margin: '80px auto', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
                 <h2 className="auth-card__title" style={{ textAlign: 'center', marginBottom: 24 }}>Forgot Password</h2>
                 
-                {status.error && <Alert message="Erreur" description={status.error} type="error" showIcon style={{ marginBottom: 16 }} />}
-                {status.message && <Alert message="Succès" description={status.message} type="success" showIcon style={{ marginBottom: 16 }} />}
+                {status.error && <Alert message="Error" description={status.error} type="error" showIcon style={{ marginBottom: 16 }} />}
+                {status.message && <Alert message="Success" description={status.message} type="success" showIcon style={{ marginBottom: 16 }} />}
 
                 <Form layout="vertical" onFinish={handleSubmit}>
-                    <Form.Item label="Email address" name="email" rules={[{ required: true, type: 'email', message: 'Veuillez entrer un email valide!' }]}>
+                    <Form.Item label="Email address" name="email" rules={[{ required: true, type: 'email', message: 'Please enter a valid email address!' }]}>
                         <Input prefix={<MailOutlined />} placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} size="large" />
                     </Form.Item>
                     
                     <Form.Item>
                         <Button type="primary" htmlType="submit" block size="large" style={{ backgroundColor: '#E63946', borderColor: '#E63946' }} loading={status.loading}>
-                            Envoyer le lien
+                            Send Reset Link
                         </Button>
                     </Form.Item>
                 </Form>
 
                 <p className="auth-switch" style={{ textAlign: 'center' }}>
-                    Mot de passe retrouvé ? <Link to="/login">Retour au login</Link>
+                    Remembered your password? <Link to="/login">Back to Login</Link>
                 </p>
             </Card>
         </div>

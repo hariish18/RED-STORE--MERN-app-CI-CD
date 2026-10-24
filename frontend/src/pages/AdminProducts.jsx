@@ -20,8 +20,8 @@ function AdminProducts() {
     const [extraImages, setExtraImages] = useState([]);
     const [isSaving, setIsSaving] = useState(false);
 
-    // meme garde que AdminDashboard.jsx : verifie le token en local (synchrone), pas
-    // seulement `user` en Redux, qui reste null le temps que current() (App.jsx) resolve
+    // same guard as AdminDashboard.jsx: checks the token locally (synchronous), not
+    // just `user` in Redux, which stays null while current() (App.jsx) resolves
     useEffect(() => {
         if (!token) {
             navigate("/login", { replace: true });

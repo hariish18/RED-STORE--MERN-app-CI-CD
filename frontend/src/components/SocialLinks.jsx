@@ -1,16 +1,16 @@
-// icones reseaux sociaux partagees entre le footer et la page Contact,
-// pour ne pas dupliquer le meme markup SVG a deux endroits
+// Social media icons shared between footer and Contact page,
+// to avoid duplicating the same SVG markup in two places
 
-// TODO : remplacer par les vrais comptes RedStore des qu'ils existent
-// (ex. https://www.instagram.com/<compte>) ; en attendant, chaque icone ouvre
-// la page d'accueil du reseau plutot qu'un "#" qui ne fait rien.
+// TODO: Replace with real RedStore accounts once created
+// (e.g. https://www.instagram.com/<account>); meanwhile, each icon opens
+// the network homepage rather than an inactive "#".
 const SOCIAL_URLS = {
     instagram: "https://www.instagram.com/",
     facebook: "https://www.facebook.com/",
     twitter: "https://twitter.com/",
 };
 
-// target="_blank" + rel="noopener noreferrer" : lien externe, la page du site reste ouverte
+// target="_blank" + rel="noopener noreferrer": external link, keeps site page open
 const externalProps = { target: "_blank", rel: "noopener noreferrer" };
 
 export default function SocialLinks({ className = "" }) {

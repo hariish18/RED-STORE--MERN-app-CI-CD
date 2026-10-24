@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../model/User");
 
-// identifie l'utilisateur si un token valide est fourni, sans bloquer la requete sinon (checkout invite autorise)
+// Identifies user if a valid token is provided, without blocking request otherwise (allows guest checkout)
 const optionalAuth = async (req, res, next) => {
     try {
         const token = req.headers["authorization"];
@@ -10,7 +10,7 @@ const optionalAuth = async (req, res, next) => {
         const foundUser = await User.findById(decode.id);
         if (foundUser) req.user = foundUser;
     } catch (error) {
-        // token invalide ou expire -> on continue en tant qu'invite
+        // Invalid or expired token -> proceed as guest
     }
     next();
 };

@@ -7,10 +7,10 @@ import { formatPrice } from "../utils/format";
 import { STORE_BRAND } from "../utils/brand";
 import "./ProductCard.css";
 
-// card produit unique du site (page Shop, "You Might Also Like"...) : marque, titre, prix,
-// coeur wishlist en overlay, zoom de l'image et lift de la card au survol.
-// inView = true : l'apparition se declenche au scroll (sections plus bas dans la page)
-// au lieu de se jouer des le montage comme dans la grille Shop.
+// Unified product card for the site (Shop page, "You Might Also Like"...): brand, title, price,
+// wishlist heart overlay, image zoom and card lift on hover.
+// inView = true: entry triggers on scroll (for sections lower on the page)
+// instead of playing on initial mount like in the Shop grid.
 export default function ProductCard({ product, index = 0, inView = false }) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -29,8 +29,8 @@ export default function ProductCard({ product, index = 0, inView = false }) {
         else dispatch(addToWishlist(product));
     };
 
-    // le bouton panier ne devine plus une pointure : il envoie vers la fiche
-    // produit, ou vit le vrai selecteur de taille (evite le bug "toujours 40")
+    // The cart button no longer guesses a size: it navigates to the product
+    // details page where the actual size selector lives (avoids "always size 40" bug)
     const handleAddToCart = (e) => {
         e.preventDefault();
         e.stopPropagation();

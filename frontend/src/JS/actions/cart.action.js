@@ -7,9 +7,9 @@ const authConfig = () => ({
     headers: { authorization: localStorage.getItem("token") },
 });
 
-// seule source de verite du panier cote frontend : le state Redux est toujours rempli a
-// partir de la reponse serveur (jamais calcule localement), pour que la navbar, la page
-// /cart et le checkout affichent toujours exactement le meme panier
+// single source of truth for the cart on the frontend side: the Redux state is always
+// populated from the server response (never computed locally), so the navbar, the
+// /cart page and the checkout always display exactly the same cart
 export const getCart = () => async (dispatch) => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -29,12 +29,12 @@ export const getCart = () => async (dispatch) => {
     }
 };
 
-// conserve pour compatibilite avec auth.action.js (appele au login/register/current)
+// kept for compatibility with auth.action.js (called on login/register/current)
 export const mergeServerCart = () => getCart();
 
-// ajoute un produit (ou incremente sa quantite s'il est deja dans le panier) - persiste
-// cote serveur (source de verite) puis recharge le panier complet, pour recuperer le stock
-// et le totalPrice recalcules par le backend
+// adds a product (or increments its quantity if already in the cart) - persists
+// server-side (source of truth) then reloads the full cart, to recover the stock
+// and totalPrice recalculated by the backend
 export const addToCart = (product, size, quantity = 1) => async (dispatch, getState) => {
     if (!getState().authReducer.isAuth) {
         return { success: false, error: "Please sign in to add items to your cart." };
@@ -53,8 +53,8 @@ export const addToCart = (product, size, quantity = 1) => async (dispatch, getSt
     }
 };
 
-// ajuste la quantite d'un article deja dans le panier (delta relatif : +1/-1 depuis les
-// boutons de la page panier) en reutilisant /api/cart/add, qui incremente/decremente
+// adjusts the quantity of an item already in the cart (relative delta: +1/-1 from the
+// cart page buttons) by reusing /api/cart/add, which increments/decrements
 export const updateCartQuantity = (productId, size, delta) => async (dispatch, getState) => {
     if (!getState().authReducer.isAuth) {
         return { success: false, error: "Please sign in to update your cart." };
@@ -73,7 +73,7 @@ export const updateCartQuantity = (productId, size, delta) => async (dispatch, g
     }
 };
 
-// retire completement un article du panier (toutes quantites confondues)
+// completely removes an item from the cart (all quantities combined)
 export const removeFromCart = (productId, size) => async (dispatch, getState) => {
     if (!getState().authReducer.isAuth) {
         return { success: false, error: "Please sign in to update your cart." };
@@ -89,15 +89,15 @@ export const removeFromCart = (productId, size) => async (dispatch, getState) =>
     }
 };
 
-// vide le panier (fin de commande) - persiste cote serveur avant de vider Redux
+// empties the cart (end of order) - persists server-side before clearing Redux
 export const clearCart = () => async (dispatch, getState) => {
     if (getState().authReducer.isAuth) {
         try {
             await axios.delete(`${API_URL}/api/cart`, authConfig());
         } catch (error) {
-            // le panier local est quand meme vide (commande deja passee) : ne bloque pas
-            // l'utilisateur sur une erreur de nettoyage post-paiement
-            console.error("Erreur:", error.response?.data || error.message);
+            // the local cart is cleared anyway (order already placed): don't block
+            // the user on a post-payment cleanup error
+            console.error("Error:", error.response?.data || error.message);
         }
     }
     dispatch({ type: CLEAR_CART });

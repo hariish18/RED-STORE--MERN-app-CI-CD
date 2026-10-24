@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../model/User");
 
-// crée un utilisateur directement en base (mot de passe haché par le hook pre('save'))
+// Creates a user directly in the database (password hashed by pre('save') hook)
 const createUser = async (overrides = {}) => {
     const user = new User({
         name: "Test User",
@@ -13,7 +13,7 @@ const createUser = async (overrides = {}) => {
     return user;
 };
 
-// même format de token que auth.controller (payload { id }, signé avec SECRET_KEY)
+// Same token format as auth.controller (payload { id }, signed with SECRET_KEY)
 const tokenFor = (user) => jwt.sign({ id: user._id }, process.env.SECRET_KEY, { expiresIn: "2h" });
 
 module.exports = { createUser, tokenFor };

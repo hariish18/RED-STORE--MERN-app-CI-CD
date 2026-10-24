@@ -5,11 +5,11 @@ import { getWishlist } from "./wishlist.action";
 
 import { API_URL } from "../../utils/api";
 
-// Le backend ne renvoie pas un format d'erreur unique : la validation
-// (express-validator) renvoie { errors: [{msg, path, ...}] }, alors que les
-// erreurs "métier" (email deja utilise, etc.) renvoient { message }. Aucune
-// des deux routes ne renvoie jamais { msg } au niveau racine, donc lire
-// error.response.data.msg directement renvoie toujours undefined.
+// The backend does not return a single error format: validation
+// (express-validator) returns { errors: [{msg, path, ...}] }, while
+// "business" errors (email already used, etc.) return { message }. Neither
+// route ever returns { msg } at the root level, so reading
+// error.response.data.msg directly always returns undefined.
 const extractAuthError = (error) => {
     const data = error.response?.data;
     if (data?.errors?.length) return data.errors.map((e) => e.msg).join(" ");
@@ -17,7 +17,7 @@ const extractAuthError = (error) => {
     return "Something went wrong. Please try again.";
 };
 
-//l'action qui gére l'enregistrement d'un utilisateur
+// action that handles user registration
 export const register = (newUser, navigate) => async (dispatch) => {
     dispatch({ type: LOAD_AUTH })
     try {
@@ -33,7 +33,7 @@ export const register = (newUser, navigate) => async (dispatch) => {
         dispatch({ type: FAIL_AUTH, payload: extractAuthError(error) });
     }
 };
-//l'action qui gére la connexion d'un utilisateur
+// action that handles user login
 export const login = (user , navigate ) => async (dispatch) => {
     dispatch({ type: LOAD_AUTH })
     try {
@@ -47,7 +47,7 @@ export const login = (user , navigate ) => async (dispatch) => {
         dispatch({ type: FAIL_AUTH, payload: extractAuthError(error) });
     }
 };
-// l'action qui gére la personne qui est connecté
+// action that handles the currently logged-in user
 export const current = () => async (dispatch) => {
     dispatch({ type: LOAD_AUTH });
     try {
@@ -62,20 +62,20 @@ export const current = () => async (dispatch) => {
     dispatch(mergeServerCart())
     dispatch(getWishlist())
 } catch {
-    // current() tourne silencieusement a chaque montage de App, y compris
-    // pour un visiteur non connecte (pas de token / token expire) : ce n'est
-    // pas une erreur a afficher sur les pages Login/Register, juste l'etat
-    // "pas connecte". On ne peuple donc pas `errors` ici.
+    // current() runs silently on every App mount, including
+    // for a non-logged-in visitor (no token / expired token): this is
+    // not an error to display on Login/Register pages, just the
+    // "not logged in" state. So we do not populate `errors` here.
     dispatch({ type: FAIL_AUTH, payload: null });
 }
 }
-// se déconnecter : logout
+// log out: logout
 export const logout = (navigate) => async (dispatch) => {
     dispatch({ type: LOGOUT_AUTH })
     navigate('/login')
 };
 
-// met a jour les informations du profil (nom, email, telephone, mot de passe optionnel)
+// updates profile information (name, email, phone, optional password)
 export const updateProfile = (updates) => async (dispatch) => {
     try {
         const config = { headers: { authorization: localStorage.getItem("token") } };
@@ -89,7 +89,7 @@ export const updateProfile = (updates) => async (dispatch) => {
     }
 };
 
-// ajoute une adresse de livraison au profil
+// adds a shipping address to the profile
 export const addAddress = (address) => async (dispatch) => {
     try {
         const config = { headers: { authorization: localStorage.getItem("token") } };
@@ -101,7 +101,7 @@ export const addAddress = (address) => async (dispatch) => {
     }
 };
 
-// modifie une adresse existante
+// updates an existing address
 export const updateAddress = (addressId, address) => async (dispatch) => {
     try {
         const config = { headers: { authorization: localStorage.getItem("token") } };
@@ -113,8 +113,8 @@ export const updateAddress = (addressId, address) => async (dispatch) => {
     }
 };
 
-// demande de reset de mot de passe (page ForgotPassword) - pas de dispatch : aucun autre
-// composant n'a besoin de cet etat, la page gere son propre affichage de succes/erreur
+// password reset request (ForgotPassword page) - no dispatch: no other
+// component needs this state; the page manages its own success/error display
 export const forgotPassword = async (email) => {
     try {
         const { data } = await axios.post(`${API_URL}/api/auth/forgot-password`, { email });
@@ -124,7 +124,7 @@ export const forgotPassword = async (email) => {
     }
 };
 
-// applique le nouveau mot de passe (page ResetPassword)
+// applies the new password (ResetPassword page)
 export const resetPassword = async (token, password) => {
     try {
         const { data } = await axios.post(`${API_URL}/api/auth/reset-password/${token}`, { password });
@@ -134,7 +134,7 @@ export const resetPassword = async (token, password) => {
     }
 };
 
-// supprime une adresse du profil
+// removes an address from the profile
 export const deleteAddress = (addressId) => async (dispatch) => {
     try {
         const config = { headers: { authorization: localStorage.getItem("token") } };

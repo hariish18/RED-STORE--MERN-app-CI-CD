@@ -1,12 +1,12 @@
-// Script ponctuel : redefinit le mot de passe d'un utilisateur via son email
-// (ex : mot de passe admin oublie, aucun service mail n'etant configure pour
-// le flux "forgot password").
+// Utility script: resets a user's password via email
+// (e.g. forgotten admin password when no mail service is configured
+// for "forgot password" flow).
 //
-// Le nouveau mot de passe est demande dans le terminal (saisie masquee) et
-// jamais passe en argument, pour qu'il n'apparaisse pas dans l'historique du shell.
+// The new password is prompted in the terminal (masked input) and
+// never passed as a CLI argument, so it never appears in shell history.
 //
-// Usage : node scripts/resetPassword.js you@example.com
-//    ou : npm run reset:password -- you@example.com
+// Usage: node scripts/resetPassword.js you@example.com
+//    or: npm run reset:password -- you@example.com
 
 require("dotenv").config({ path: require("path").resolve(__dirname, "../.env") });
 
@@ -17,12 +17,12 @@ const User = require("../model/User");
 
 const [, , email] = process.argv;
 
-// memes bornes que updateProfile/resetPassword dans auth.controller.js
+// Same bounds as updateProfile/resetPassword in auth.controller.js
 const MIN_LENGTH = 6;
 const MAX_LENGTH = 32;
 
-// lit une ligne sans afficher les caracteres tapes (une "*" par caractere).
-// Si stdin n'est pas un terminal (entree redirigee), on retombe sur une lecture simple.
+// Reads a line without echoing typed characters ("*" per character).
+// If stdin is not a TTY (redirected input), falls back to plain line reading.
 const askHidden = (question) =>
     new Promise((resolve) => {
         const { stdin, stdout } = process;
@@ -56,11 +56,11 @@ const askHidden = (question) =>
                 if (char === "\u0003") {
                     // Ctrl+C
                     stdin.setRawMode(false);
-                    stdout.write("\nAnnule.\n");
+                    stdout.write("\nCancelled.\n");
                     process.exit(130);
                 }
                 if (char === "\u007f" || char === "\b") {
-                    // retour arriere
+                    // Backspace
                     if (input.length > 0) {
                         input = input.slice(0, -1);
                         stdout.write("\b \b");
@@ -76,7 +76,7 @@ const askHidden = (question) =>
 
 const resetPassword = async () => {
     if (!email) {
-        console.error("Usage : node scripts/resetPassword.js you@example.com");
+        console.error("Usage: node scripts/resetPassword.js you@example.com");
         process.exit(1);
     }
 
@@ -84,21 +84,21 @@ const resetPassword = async () => {
 
     const user = await User.findOne({ email });
     if (!user) {
-        console.log(`Introuvable : ${email}`);
+        console.log(`Not found: ${email}`);
         await mongoose.disconnect();
         process.exit(1);
     }
 
-    const password = await askHidden("Nouveau mot de passe : ");
-    const confirm = await askHidden("Confirmer le mot de passe : ");
+    const password = await askHidden("New password: ");
+    const confirm = await askHidden("Confirm password: ");
 
-    // le schema User applique trim au mot de passe : on valide la valeur telle qu'elle sera hachee
+    // User schema applies trim to password: we validate the value as it will be hashed
     const trimmed = password.trim();
     let error = null;
     if (password !== confirm) {
-        error = "Les mots de passe ne correspondent pas.";
+        error = "Passwords do not match.";
     } else if (trimmed.length < MIN_LENGTH || trimmed.length > MAX_LENGTH) {
-        error = `Le mot de passe doit contenir entre ${MIN_LENGTH} et ${MAX_LENGTH} caracteres.`;
+        error = `Password must be between ${MIN_LENGTH} and ${MAX_LENGTH} characters.`;
     }
     if (error) {
         console.error(error);
@@ -106,24 +106,23 @@ const resetPassword = async () => {
         process.exit(1);
     }
 
-    // meme chemin que l'inscription : le hook pre('save') du modele User hache
-    // le mot de passe avec bcrypt (10 rounds). On invalide aussi un eventuel
-    // token de reset encore en cours.
+    // Same path as signup: pre('save') hook on User model hashes
+    // password with bcrypt (10 rounds). Also invalidates any active reset token.
     user.password = password;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
     await user.save();
 
-    console.log(`Mot de passe mis à jour pour ${user.email}`);
+    console.log(`Password updated for ${user.email}`);
 
     await mongoose.disconnect();
     process.exit(0);
 };
 
 resetPassword().catch(async (error) => {
-    // uniquement le message : l'objet d'erreur complet (ex : ValidationError)
-    // peut contenir la valeur du champ password
-    console.error("Le script a echoue :", error.message);
+    // Only the message: full error object (e.g. ValidationError)
+    // might contain the value of password field
+    console.error("Script failed:", error.message);
     await mongoose.disconnect().catch(() => {});
     process.exit(1);
 });

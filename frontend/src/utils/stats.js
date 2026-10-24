@@ -1,5 +1,5 @@
-// Source unique pour le bandeau "chiffres cles", partagee entre About.jsx
-// et la Home (StatsSection.jsx) pour ne jamais diverger sur le contenu.
+// Single source of truth for the "key figures" banner, shared between About.jsx
+// and the Home page (StatsSection.jsx) to keep content in sync.
 export const STATS = [
     { value: '500+', label: 'Styles' },
     { value: '50+', label: 'Brands' },

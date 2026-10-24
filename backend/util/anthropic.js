@@ -1,7 +1,7 @@
 const Anthropic = require("@anthropic-ai/sdk");
 
-//instanciation paresseuse : si ANTHROPIC_API_KEY n'est pas configuree, le serveur
-//doit quand meme demarrer normalement (seule la route generate-description echouera)
+// Lazy instantiation: if ANTHROPIC_API_KEY is not configured, the server
+// must still start normally (only the generate-description route will fail)
 let anthropic = null;
 const getAnthropicClient = () => {
     if (!anthropic) {

@@ -10,7 +10,7 @@ import {
 import { API_URL as BASE_URL } from "../../utils/api";
 const API_URL = `${BASE_URL}/api/order`;
 
-// place la commande cote backend (invite ou connecte : le token est envoye s'il existe)
+// places the order on the backend (guest or logged-in: the token is sent if it exists)
 export const placeOrder = (orderData) => async (dispatch) => {
     dispatch({ type: LOAD_ORDER });
     try {
@@ -26,7 +26,7 @@ export const placeOrder = (orderData) => async (dispatch) => {
     }
 };
 
-// recupere une commande via son numero (page de confirmation)
+// fetches an order by its number (confirmation page)
 export const getOrderByNumber = (orderNumber) => async (dispatch) => {
     dispatch({ type: LOAD_ORDER });
     try {
@@ -37,7 +37,7 @@ export const getOrderByNumber = (orderNumber) => async (dispatch) => {
     }
 };
 
-// recupere les commandes de l'utilisateur connecte (page profil)
+// fetches the orders of the logged-in user (profile page)
 export const getMyOrders = () => async (dispatch) => {
     dispatch({ type: LOAD_ORDER });
     try {

@@ -1,7 +1,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { EASE_SMOOTH } from "../utils/motion";
 
-// Variantes d'animation pour les transitions de page
+// Animation variants for page transitions
 const pageVariants = {
     initial: {
         opacity: 0,
@@ -29,8 +29,8 @@ const pageVariants = {
     },
 };
 
-// Variante degradee : seulement un fondu, sans translation/zoom, pour
-// prefers-reduced-motion (evite le mouvement a chaque navigation).
+// Fallback variant: fade only, without translation/zoom, for
+// prefers-reduced-motion (avoids motion on every navigation).
 const reducedVariants = {
     initial: { opacity: 0 },
     enter: { opacity: 1, transition: { duration: 0.15 } },
@@ -38,8 +38,8 @@ const reducedVariants = {
 };
 
 /**
- * Composant wrapper qui anime l'entrée et la sortie de chaque page.
- * Utiliser avec AnimatePresence + location.key dans le routeur.
+ * Wrapper component that animates the entry and exit of each page.
+ * Use with AnimatePresence + location.key in the router.
  */
 function PageTransition({ children }) {
     const shouldReduceMotion = useReducedMotion();

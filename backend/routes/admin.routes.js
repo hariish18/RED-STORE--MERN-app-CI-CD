@@ -12,17 +12,17 @@ const isRole = require("../middlewares/isRole");
 
 const router = express.Router();
 
-//stats globales du dashboard admin (commandes, produits, users, revenu) - admin only
+// Global admin dashboard stats (orders, products, users, revenue) - admin only
 router.get("/stats", isAuth, isRole("admin"), getStats);
-//20 dernieres commandes, tous clients - admin only
+// Last 20 orders, all customers - admin only
 router.get("/orders", isAuth, isRole("admin"), getRecentOrders);
-//changer le statut de traitement d'une commande - admin only
+// Change processing status of an order - admin only
 router.patch("/orders/:id/status", isAuth, isRole("admin"), updateOrderStatus);
-//liste paginee de tous les produits (?page=&limit=&q=) - admin only
+// Paginated list of all products (?page=&limit=&q=) - admin only
 router.get("/products", isAuth, isRole("admin"), getAdminProducts);
-//modifier prix / stock / pointures d'un produit - admin only
+// Modify price / stock / sizes of a product - admin only
 router.patch("/products/:id", isAuth, isRole("admin"), updateAdminProduct);
-//supprimer un produit - admin only
+// Delete a product - admin only
 router.delete("/products/:id", isAuth, isRole("admin"), deleteAdminProduct);
 
 module.exports = router;

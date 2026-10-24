@@ -3,12 +3,12 @@ const app = require("../app");
 const User = require("../model/User");
 const { createUser, tokenFor } = require("./helpers");
 
-// /login est limité à 5 requêtes par IP sur 15 min (loginLimiter) : ce fichier reste sous ce seuil
-// (le compteur est en mémoire et Jest recharge les modules pour chaque fichier de test).
+// /login is limited to 5 requests per IP per 15 min (loginLimiter): this file stays below that threshold
+// (the counter is in-memory and Jest reloads modules for each test file).
 
 const newUser = { name: "Alice", email: "alice@test.local", password: "secret123" };
 
-// le mot de passe (en clair ou haché) ne doit apparaître nulle part dans la réponse
+// the password (plain text or hashed) must not appear anywhere in the response
 const expectNoPassword = (body) => {
     const raw = JSON.stringify(body);
     expect(raw).not.toMatch(/"password"/);
@@ -16,7 +16,7 @@ const expectNoPassword = (body) => {
 };
 
 describe("POST /api/auth/register", () => {
-    it("crée le compte, renvoie un token et aucun mot de passe", async () => {
+    it("creates the account, returns a token and no password", async () => {
         const res = await request(app).post("/api/auth/register").send(newUser);
 
         expect(res.status).toBe(201);
@@ -25,7 +25,7 @@ describe("POST /api/auth/register", () => {
         expectNoPassword(res.body);
     });
 
-    it("stocke le mot de passe haché, jamais en clair", async () => {
+    it("stores the password hashed, never in plain text", async () => {
         await request(app).post("/api/auth/register").send(newUser);
 
         const saved = await User.findOne({ email: newUser.email });
@@ -33,7 +33,7 @@ describe("POST /api/auth/register", () => {
         expect(saved.password).toMatch(/^\$2[aby]\$/);
     });
 
-    it("refuse un email déjà utilisé", async () => {
+    it("rejects an already used email", async () => {
         await createUser({ email: newUser.email });
 
         const res = await request(app).post("/api/auth/register").send(newUser);
@@ -42,10 +42,10 @@ describe("POST /api/auth/register", () => {
         expect(res.body.message).toBe("User already exists");
     });
 
-    it("refuse des données invalides (validation)", async () => {
+    it("rejects invalid data (validation)", async () => {
         const res = await request(app)
             .post("/api/auth/register")
-            .send({ name: "", email: "pas-un-email", password: "123" });
+            .send({ name: "", email: "not-an-email", password: "123" });
 
         expect(res.status).toBe(400);
         expect(Array.isArray(res.body.errors)).toBe(true);
@@ -58,7 +58,7 @@ describe("POST /api/auth/login", () => {
         await createUser({ name: newUser.name, email: newUser.email, password: newUser.password });
     });
 
-    it("connecte avec les bons identifiants, sans renvoyer le mot de passe", async () => {
+    it("logs in with valid credentials without returning the password", async () => {
         const res = await request(app)
             .post("/api/auth/login")
             .send({ email: newUser.email, password: newUser.password });
@@ -69,7 +69,7 @@ describe("POST /api/auth/login", () => {
         expectNoPassword(res.body);
     });
 
-    it("refuse un mauvais mot de passe", async () => {
+    it("rejects an incorrect password", async () => {
         const res = await request(app)
             .post("/api/auth/login")
             .send({ email: newUser.email, password: "wrongpass" });
@@ -78,10 +78,10 @@ describe("POST /api/auth/login", () => {
         expect(res.body.token).toBeUndefined();
     });
 
-    it("refuse un email inconnu", async () => {
+    it("rejects an unknown email", async () => {
         const res = await request(app)
             .post("/api/auth/login")
-            .send({ email: "inconnu@test.local", password: newUser.password });
+            .send({ email: "unknown@test.local", password: newUser.password });
 
         expect(res.status).toBe(400);
         expect(res.body.token).toBeUndefined();
@@ -89,7 +89,7 @@ describe("POST /api/auth/login", () => {
 });
 
 describe("GET /api/auth/current", () => {
-    it("renvoie l'utilisateur connecté sans mot de passe", async () => {
+    it("returns the logged-in user without password", async () => {
         const user = await createUser({ name: "Alice", email: newUser.email });
 
         const res = await request(app).get("/api/auth/current").set("authorization", tokenFor(user));

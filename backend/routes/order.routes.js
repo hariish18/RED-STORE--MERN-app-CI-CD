@@ -5,12 +5,12 @@ const isAuth = require("../middlewares/isAuth");
 
 const router = express.Router();
 
-//creer une commande (invite ou connecte)
+// Create an order (guest or authenticated)
 router.post("/", optionalAuth, createOrder);
-//commandes de l'utilisateur connecte (page profil) - doit precede /:orderNumber
+// Authenticated user's orders (profile page) - must precede /:orderNumber
 router.get("/mine", isAuth, getMyOrders);
-//recuperer une commande via son numero (page de confirmation) - invite autorise, mais si la
-//commande appartient a un compte, seul ce compte doit pouvoir la lire (voir getOrderByNumber)
+// Retrieve an order via order number (confirmation page) - guest allowed, but if
+// order belongs to an account, only that account can read it (see getOrderByNumber)
 router.get("/:orderNumber", optionalAuth, getOrderByNumber);
 
 module.exports = router;

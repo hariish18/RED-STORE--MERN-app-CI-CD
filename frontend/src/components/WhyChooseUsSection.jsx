@@ -3,8 +3,8 @@ import Reveal from './Reveal';
 import { WHY_CHOOSE_US } from '../utils/whyChooseUs';
 import './WhyChooseUsSection.css';
 
-// section "Why Choose Us" complete (titre + 4 cards avec description),
-// partagee entre About.jsx et la Home.
+// Full "Why Choose Us" section (title + 4 cards with description),
+// shared between About.jsx and Home.
 export default function WhyChooseUsSection() {
     return (
         <section className="about-features-section section">

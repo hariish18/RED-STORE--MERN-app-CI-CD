@@ -5,8 +5,8 @@ const { destroyProductImages } = require("../util/productImages");
 
 const ORDER_STATUSES = ["pending", "processing", "shipped", "delivered", "cancelled"];
 
-//statistiques globales du dashboard admin : commandes, produits, utilisateurs,
-//et revenu total (uniquement les commandes dont le paiement a reussi)
+// Global statistics for admin dashboard: orders, products, users,
+// and total revenue (only orders where payment succeeded)
 exports.getStats = async (req, res) => {
     try {
         const [orderStats, totalProducts, totalUsers] = await Promise.all([
@@ -34,7 +34,7 @@ exports.getStats = async (req, res) => {
     }
 };
 
-//20 dernieres commandes, tous clients confondus, pour le tableau du dashboard admin
+// Last 20 orders across all customers for admin dashboard table
 exports.getRecentOrders = async (req, res) => {
     try {
         const orders = await Order.find()
@@ -45,8 +45,8 @@ exports.getRecentOrders = async (req, res) => {
         const formatted = orders.map((order) => ({
             _id: order._id,
             orderNumber: order.orderNumber,
-            //commande invite (createdBy absent) : on retombe sur le nom saisi a la livraison,
-            //mais aucun email n'est capture pour les invites (voir shippingInfo dans Order.js)
+            // Guest order (createdBy absent): falls back to name entered at delivery,
+            // but no email is captured for guests (see shippingInfo in Order.js)
             customerName: order.createdBy?.name || order.shippingInfo?.fullName || "Guest",
             customerEmail: order.createdBy?.email || null,
             createdAt: order.createdAt,
@@ -60,7 +60,7 @@ exports.getRecentOrders = async (req, res) => {
     }
 };
 
-//met a jour le statut de traitement d'une commande (pending/processing/shipped/delivered/cancelled)
+// Updates processing status of an order (pending/processing/shipped/delivered/cancelled)
 exports.updateOrderStatus = async (req, res) => {
     try {
         const { status } = req.body;
@@ -86,7 +86,7 @@ const PRODUCTS_PAGE_SIZE = 10;
 
 const escapeRegex = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-//forme renvoyee au tableau admin : stock total = somme des stocks par pointure
+// Format returned to admin table: total stock = sum of stocks across sizes
 const toAdminProduct = (product) => ({
     _id: product._id,
     title: product.title,
@@ -98,7 +98,7 @@ const toAdminProduct = (product) => ({
     imageProd: product.imageProd,
 });
 
-//liste paginee de tous les produits (tous createurs confondus), filtrable par nom ou marque (?q=)
+// Paginated list of all products (across all creators), filterable by title or brand (?q=)
 exports.getAdminProducts = async (req, res) => {
     try {
         const page = Math.max(1, parseInt(req.query.page, 10) || 1);
@@ -130,7 +130,7 @@ exports.getAdminProducts = async (req, res) => {
     }
 };
 
-//mise a jour partielle d'un produit par l'admin : nom, marque, categorie, prix, pointures/stock
+// Partial update of a product by admin: title, brand, category, price, sizes/stock
 exports.updateAdminProduct = async (req, res) => {
     try {
         const { title, brand, gender, price, sizes } = req.body;
@@ -195,7 +195,7 @@ exports.updateAdminProduct = async (req, res) => {
     }
 };
 
-//suppression d'un produit par l'admin (peu importe son createur), images Cloudinary comprises
+// Deletion of a product by admin (regardless of creator), including Cloudinary images
 exports.deleteAdminProduct = async (req, res) => {
     try {
         const product = await Product.findByIdAndDelete(req.params.id);

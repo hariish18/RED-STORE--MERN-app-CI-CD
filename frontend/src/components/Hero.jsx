@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import "../pages/Home.css"; // Assurez-vous que ce fichier existe bien
+import "../pages/Home.css"; // Ensure this stylesheet exists
 
 const SNEAKER_IMAGE =
     "https://res.cloudinary.com/dvvekltxc/image/upload/v1786474418/Screenshot_2026-08-11_195026_cdfkwh.png";
@@ -10,7 +10,7 @@ function Hero() {
         <section className="hero-section">
             <div className="hero-content">
                 <div className="hero-eyebrow">
-                    <span className="hero-eyebrow__label">Nouvelle Collection</span>
+                    <span className="hero-eyebrow__label">New Collection</span>
                 </div>
                 <h1 className="hero-title">
                     Step Up Your Game <br /> With Red Store!

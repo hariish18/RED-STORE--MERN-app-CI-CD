@@ -23,7 +23,7 @@
         -webkit-backdrop-filter 0.35s ease !important;
 }
 
-/* Accueil en haut de page : fusionne avec le fond rose */
+/* Home at top of page: blends with pink background */
 .red-navbar--home:not(.red-navbar--scrolled) {
     background: transparent !important;
     border-bottom-color: transparent;
@@ -32,11 +32,11 @@
     -webkit-backdrop-filter: none;
 }
 
-/* Après scroll : verre dépoli blanc + ombre.
-   saturate(180%) amplifiait les couleurs des visuels produits (vert gazon,
-   etc.) qui defilent sous la navbar fixed, ce qui faisait apparaitre des
-   taches colorees "fantomes" derriere le flou ; fond plus opaque + pas de
-   sur-saturation pour un verre depoli neutre. */
+/* After scroll: frosted white glass + shadow.
+   saturate(180%) was amplifying the colors of product images (bright green,
+   etc.) scrolling under the fixed navbar, causing colored "ghost" patches
+   behind the blur; more opaque background + no over-saturation
+   for a neutral frosted glass effect. */
 .red-navbar--scrolled {
     background: rgba(255, 255, 255, 0.96) !important;
     backdrop-filter: blur(14px);
@@ -47,7 +47,7 @@
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-/* Autres pages : barre blanche légèrement floutée dès le chargement */
+/* Other pages: slightly blurred white bar from the start */
 .red-navbar--solid {
     background: rgba(255, 255, 255, 0.96) !important;
     backdrop-filter: blur(12px);
@@ -56,7 +56,7 @@
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-/* --- GRILLE 3 COLONNES : logo | liens | icônes --- */
+/* --- 3-COLUMN GRID: logo | links | icons --- */
 .red-navbar__container {
     display: flex;
     flex-wrap: wrap;
@@ -155,7 +155,7 @@
     box-shadow: none;
 }
 
-/* --- LIENS --- */
+/* --- LINKS --- */
 .red-navbar__links {
     display: flex;
     align-items: center;
@@ -212,7 +212,7 @@
     border-radius: 4px;
 }
 
-/* --- ZONE ACTIONS (recherche, compte, panier) --- */
+/* --- ACTIONS AREA (search, account, cart) --- */
 .red-navbar__actions {
     display: flex;
     align-items: center;
@@ -220,7 +220,7 @@
     flex-shrink: 0;
 }
 
-/* --- RECHERCHE --- */
+/* --- SEARCH --- */
 .red-navbar__search {
     display: flex;
     align-items: center;
@@ -308,7 +308,7 @@
     font-weight: 700;
 }
 
-/* --- ICÔNES --- */
+/* --- ICONS --- */
 .red-navbar__icon-btn {
     background: none;
     border: none;
@@ -367,7 +367,7 @@
     outline-offset: 2px;
 }
 
-/* --- MENU DU DROPDOWN COMPTE --- */
+/* --- ACCOUNT DROPDOWN MENU --- */
 .red-navbar__account .dropdown-menu {
     background: var(--color-bg);
     border: 1px solid var(--color-border);
@@ -435,7 +435,7 @@
     color: var(--color-primary) !important;
 }
 
-/* --- PANIER --- */
+/* --- CART --- */
 .red-navbar__cart {
     color: var(--color-text);
     display: inline-flex;

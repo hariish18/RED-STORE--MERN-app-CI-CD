@@ -1,15 +1,15 @@
-/* --- PAGE PANIER (Cart Page) ---
-   Composants Ant Design (Card, InputNumber, Input.Search, Button, Empty, Row/Col) ;
-   couleurs/typo via le theme ConfigProvider (styles/antdTheme.js). Ce fichier ne gere
-   que la mise en page et le rendu de la miniature. */
+/* --- CART PAGE ---
+   Ant Design components (Card, InputNumber, Input.Search, Button, Empty, Row/Col);
+   colors/typography via ConfigProvider theme (styles/antdTheme.js). This file handles
+   only layout and thumbnail rendering. */
 .cart-page {
     max-width: 1200px;
     margin: 0 auto;
-    /* hauteur = contenu reel (la BarNav est dans le flux, pas fixe) */
+    /* height = real content (BarNav is in document flow, not fixed) */
     padding: var(--space-6) var(--space-3) var(--space-8);
 }
 
-/* --- EN-TETE "Your Cart" : meme separateur que la barre meta de la page Shop --- */
+/* --- HEADER "Your Cart": same separator as the Shop page meta bar --- */
 .cart-page__header {
     display: flex;
     align-items: baseline;
@@ -30,7 +30,7 @@
     gap: var(--space-2);
 }
 
-/* --- ETATS VIDES (Empty antd) --- */
+/* --- EMPTY STATES (antd Empty) --- */
 .cart-empty {
     max-width: 480px;
     margin: var(--space-8) auto;
@@ -68,8 +68,8 @@
     margin-top: var(--space-3);
 }
 
-/* --- CARD ARTICLE --- */
-/* survol aligne sur .product-card (Shop) : liseré et ombre teintes rouge */
+/* --- ITEM CARD --- */
+/* hover aligned with .product-card (Shop): red-tinted border and shadow */
 .cart-line.ant-card-hoverable:hover {
     border-color: rgba(230, 57, 70, 0.15);
     box-shadow: 0 12px 28px rgba(230, 57, 70, 0.1);
@@ -97,8 +97,8 @@
     background: #fafafa;
 }
 
-/* cover cadre sur le produit : --thumb-focus / --thumb-zoom viennent du point focal
-   imageFocus du produit (photos en mise en scene) ; par defaut centre, sans zoom */
+/* Cover frame on product: --thumb-focus / --thumb-zoom come from focal point
+   imageFocus of product (staged photos); default center, no zoom */
 .cart-line__thumb img {
     width: 100%;
     height: 100%;
@@ -132,7 +132,7 @@
     min-width: 0;
 }
 
-/* meme petite marque grise en capitales que sur les cards produit */
+/* Same small grey uppercase brand as on product cards */
 .cart-line__brand.ant-typography {
     font-size: 0.75rem;
     text-transform: uppercase;
@@ -151,8 +151,8 @@
     color: var(--color-primary);
 }
 
-/* specificite doublee : les styles CSS-in-JS d'antd sont injectes apres ce fichier et
-   imposent sinon leur propre largeur au mode "spinner" */
+/* Doubled specificity: antd CSS-in-JS styles are injected after this file and
+   would otherwise impose their own width in "spinner" mode */
 .cart-line__body .cart-line__qty.ant-input-number {
     grid-area: qty;
     width: 128px;
@@ -226,7 +226,7 @@
     margin-top: var(--space-1);
 }
 
-/* --- RESPONSIVE (MOBILE) : Row/Col empilent deja la liste et le resume sous lg --- */
+/* --- RESPONSIVE (MOBILE): Row/Col already stack list and summary below lg --- */
 @media (max-width: 991px) {
     .cart-summary {
         position: static;

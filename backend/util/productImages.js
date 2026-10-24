@@ -1,14 +1,14 @@
 const cloudinary = require("./cloudinary");
 
-//extrait le public_id cloudinary d'une secure_url pour pouvoir la supprimer
-//(l'app ne stocke que l'URL, pas le public_id, contrairement a User.cloudinary_id)
+// Extracts Cloudinary public_id from secure_url for deletion
+// (app stores only URL, not public_id, unlike User.cloudinary_id)
 const publicIdFromUrl = (url) => {
     const match = url?.match(/\/upload\/(?:v\d+\/)?(.+)\.\w+$/);
     return match?.[1];
 };
 
-//supprime les images (principale + galerie) d'un produit sur Cloudinary - au mieux :
-//une erreur cote Cloudinary ne doit pas bloquer la suppression du produit
+// Deletes images (main + gallery) of a product on Cloudinary - best effort:
+// a Cloudinary error must not block product deletion
 const destroyProductImages = (product) => {
     const urls = [product.imageProd, ...(product.images || [])].filter(Boolean);
     return Promise.all(

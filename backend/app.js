@@ -15,7 +15,7 @@ app.set("trust proxy", Number(process.env.TRUST_PROXY ?? 1));
 const corsOptions = {
     origin: [
         "http://localhost:5173",
-        "https://stupendous-medovik-046a30.netlify.app",
+        process.env.CLIENT_URL || "https://YOUR_FRONTEND_URL.netlify.app",
     ],
     credentials: true,
 };
@@ -41,7 +41,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// Endpoint /metrics (public, non sanitisé)
+// Endpoint /metrics (protected by METRICS_TOKEN)
 app.get("/metrics", async (req, res) => {
      const token = req.headers.authorization?.replace("Bearer ", "");
     if (token !== process.env.METRICS_TOKEN) {
@@ -51,7 +51,7 @@ app.get("/metrics", async (req, res) => {
     res.end(await client.register.metrics());
 });
 
-// ---- Protection anti NoSQL Injection (compatible Express 5) ----
+// ---- NoSQL Injection protection (Express 5 compatible) ----
 const sanitizeObject = (obj) => {
     if (obj && typeof obj === "object") {
         for (const key of Object.keys(obj)) {
@@ -70,7 +70,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// ---- Importation et application des routes ----
+// ---- Import and register routes ----
 const healthRoutes = require("./routes/health.routes");
 const authRoutes = require("./routes/auth.routes");
 const productRoutes = require("./routes/prod.routes");

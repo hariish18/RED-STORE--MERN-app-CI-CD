@@ -1,14 +1,14 @@
 .testimonials {
-    /* degrade diagonal tres subtil (blanc -> rose derive de --color-primary) :
-       donne une impression de profondeur, distinct du blanc des cards ET du
-       gris neutre des autres sections, sans etre un aplat uniforme */
+    /* Subtle diagonal gradient (white -> soft pink derived from --color-primary):
+       gives an impression of depth, distinct from card white AND
+       neutral grey of other sections, without being a flat fill */
     position: relative;
     overflow: hidden;
     background: linear-gradient(135deg, #ffffff 0%, #fdf2f3 100%);
     padding: var(--space-6) 0 var(--space-8);
 }
 
-/* le contenu doit toujours passer au-dessus des formes decoratives */
+/* Content must always render above decorative shapes */
 .testimonials > .section {
     position: relative;
     z-index: 1;
@@ -46,7 +46,7 @@
     background: radial-gradient(circle, rgba(230, 57, 70, 0.03) 0%, rgba(230, 57, 70, 0) 70%);
 }
 
-/* moins de formes sur mobile : lisibilite + performance avant tout */
+/* Fewer shapes on mobile: readability + performance first */
 @media (max-width: 640px) {
     .testimonials__blob--c {
         display: none;
@@ -73,7 +73,7 @@
 
 .testimonial-card {
     position: relative;
-    /* isole la guillemet decorative (positionnee en absolu) au reste de la card */
+    /* Keeps decorative quotation mark (absolutely positioned) contained inside card */
     overflow: hidden;
     background: #fff;
     border: 1px solid rgba(230, 57, 70, 0.14);

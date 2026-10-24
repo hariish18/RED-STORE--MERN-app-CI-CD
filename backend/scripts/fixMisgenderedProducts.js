@@ -1,15 +1,15 @@
-// Script ponctuel : deplace 2 produits "women" classes par erreur dans "men"
+// Utility script: moves 2 "women" products mistakenly categorized as "men"
 // (Nine West Snake-Embossed Ankle-Tie Pump, Clarks Cognac Leather Zip Ankle Boot)
-// en corrigeant leur champ gender et leurs pointures (36-41, pointures femme).
+// by updating their gender field and shoe sizes (36-41, women sizes).
 //
-// Le seed (seedRealProducts.js) est idempotent et n'ecrase jamais un produit
-// deja en base : il faut donc ce script pour corriger les documents existants.
-// Le nouveau produit men (Cole Haan Lenox Hill Double Monk Strap) est, lui,
-// ajoute par : npm run seed:products
+// The seed script (seedRealProducts.js) is idempotent and never overwrites an existing
+// product in database: this script corrects existing documents.
+// The new men's product (Cole Haan Lenox Hill Double Monk Strap) is
+// added via: npm run seed:products
 //
-// Ne touche a aucun autre champ ni aucun autre produit.
+// Leaves all other fields and products untouched.
 //
-// Usage : node scripts/fixMisgenderedProducts.js
+// Usage: node scripts/fixMisgenderedProducts.js
 
 require("dotenv").config({ path: require("path").resolve(__dirname, "../.env") });
 
@@ -56,20 +56,20 @@ const fixProducts = async () => {
 
         if (!product) {
             notFound += 1;
-            console.log(`- introuvable, ignore : ${title}`);
+            console.log(`- not found, skipped: ${title}`);
             continue;
         }
 
         updated += 1;
-        console.log(`+ ${title} : gender=${product.gender}, pointures ${product.sizes.map((s) => s.size).join(", ")}`);
+        console.log(`+ ${title}: gender=${product.gender}, sizes ${product.sizes.map((s) => s.size).join(", ")}`);
     }
 
-    console.log(`\nTermine : ${updated} produit(s) mis a jour, ${notFound} introuvable(s).`);
+    console.log(`\nFinished: ${updated} product(s) updated, ${notFound} not found.`);
     await mongoose.disconnect();
     process.exit(0);
 };
 
 fixProducts().catch((error) => {
-    console.error("Le script a echoue :", error);
+    console.error("Script failed:", error);
     process.exit(1);
 });

@@ -1,7 +1,7 @@
 .trust-badges-container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    /* 4 colonnes */
+    /* 4 columns */
     gap: 24px;
     background: white;
     padding: 24px 0;
@@ -41,7 +41,7 @@
 @media (max-width: 768px) {
     .trust-badges-container {
         grid-template-columns: 1fr;
-        /* 1 colonne sur mobile */
+        /* 1 column on mobile */
         gap: 16px;
     }
 }

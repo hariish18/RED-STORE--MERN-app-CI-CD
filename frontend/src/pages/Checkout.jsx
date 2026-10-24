@@ -78,13 +78,13 @@ function CheckoutContent() {
     const [cardError, setCardError] = useState(null);
     const [cardComplete, setCardComplete] = useState(false);
 
-    // ✅ FONCTION DE GESTION D'ERREUR CENTRALISÉE
+    // ✅ CENTRALIZED ERROR HANDLING FUNCTION
     const handleStripeError = (message) => {
         toast.error(message);
         setPlaceError(message);
     };
 
-    // Stripe prêt quand useStripe + useElements sont disponibles
+    // Stripe is ready when useStripe + useElements are available
     useEffect(() => {
         if (!stripePromise) {
             setLoadingStripe(false);
@@ -230,7 +230,7 @@ function CheckoutContent() {
             }
 
             await dispatch(clearCart());
-            toast.success("Paiement réussi !");
+            toast.success("Payment successful!");
             navigate(`/order-confirmation/${orderResult.order.orderNumber}`);
         } catch (err) {
             console.error(err.response?.data?.msg || err.message);
@@ -308,7 +308,7 @@ function CheckoutContent() {
                         )}
                     </AnimatePresence>
 
-                    {/* CardElement toujours monté après l'étape 2 (requis pour confirmCardPayment) */}
+                    {/* CardElement always mounted after step 2 (required for confirmCardPayment) */}
                     {step >= 2 && (
                         <div
                             className={

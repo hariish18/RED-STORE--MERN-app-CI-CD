@@ -1,46 +1,46 @@
-Je veux dockeriser mon projet Red Store (MERN : frontend React 19 + Vite dans `frontend/`, backend Express 5 dans `backend/`, MongoDB Atlas, Cloudinary, Stripe, JWT). Objectif final : déployer plus tard les 2 images sur Render (sans VPS) via GitHub Actions et Docker Hub (`lazher789/redstore-backend` et `lazher789/redstore-frontend`). Pour l'instant on fait UNIQUEMENT la partie Docker en local. Lis CLAUDE.md et README.md avant de commencer.
+I want to Dockerize my Red Store project (MERN: React 19 + Vite frontend in `frontend/`, Express 5 backend in `backend/`, MongoDB Atlas, Cloudinary, Stripe, JWT). Final goal: later deploy the 2 images on Render (no VPS) via GitHub Actions and Docker Hub (`YOUR_DOCKERHUB_USERNAME/redstore-backend` and `YOUR_DOCKERHUB_USERNAME/redstore-frontend`). For now we are doing the Docker part locally ONLY. Read CLAUDE.md and README.md before starting.
 
-## Phase 1 — Analyse (ne modifie rien)
-Vérifie et résume-moi :
-- le port de `backend/server.js` et s'il lit `process.env.PORT`
-- le fichier d'entrée du backend et les scripts de `backend/package.json` et `frontend/package.json` (y a-t-il un script `lint` ?)
-- la `baseURL` dans `frontend/src/utils/api.js` (elle doit être relative `/api`) et le proxy dans `vite.config.js`
-- les NOMS des variables d'environnement utilisées (backend : `process.env.*`, frontend : `import.meta.env.VITE_*`), jamais les valeurs
-- si Multer écrit des fichiers en local au lieu de tout envoyer à Cloudinary
-- la config CORS du backend
-- les scripts de seed dans `backend/scripts/`
-- si `npm run build` du frontend passe sans erreur
-Propose ensuite un plan et attends ma validation.
+## Phase 1 — Analysis (make no changes)
+Check and summarize:
+- the port of `backend/server.js` and whether it reads `process.env.PORT`
+- the backend entry file and the scripts in `backend/package.json` and `frontend/package.json` (is there a `lint` script?)
+- the `baseURL` in `frontend/src/utils/api.js` (it must be relative `/api`) and the proxy in `vite.config.js`
+- the NAMES of environment variables used (backend: `process.env.*`, frontend: `import.meta.env.VITE_*`), never the values
+- whether Multer writes files locally instead of sending everything to Cloudinary
+- the backend CORS config
+- the seed scripts in `backend/scripts/`
+- whether `npm run build` of the frontend passes without errors
+Then propose a plan and wait for my approval.
 
-## Phase 2 — Fichiers à créer
-1. `backend/Dockerfile` : `node:20-alpine`, `WORKDIR /app`, copie de `package*.json` avant le code (cache), `npm ci --omit=dev`, `NODE_ENV=production`, `EXPOSE` du bon port, `USER node`.
-2. `backend/docker-entrypoint.sh` : vérifie que les variables obligatoires existent (message clair + `exit 1` sinon), puis `exec "$@"`. Utilisé avec `ENTRYPOINT ["docker-entrypoint.sh"]` + `CMD ["node", "<fichier d'entrée>"]`. Fins de ligne LF.
-3. `frontend/Dockerfile` multi-stage : stage `build` (`node:20-alpine`, `npm ci`, `npm run build`, variables `VITE_*` publiques en `ARG`/`ENV`), stage final `nginx:alpine` qui copie `dist/` et le template Nginx dans `/etc/nginx/templates/`.
-4. `frontend/default.conf.template` :
+## Phase 2 — Files to create
+1. `backend/Dockerfile`: `node:20-alpine`, `WORKDIR /app`, copy `package*.json` before code (cache), `npm ci --omit=dev`, `NODE_ENV=production`, `EXPOSE` the correct port, `USER node`.
+2. `backend/docker-entrypoint.sh`: check that mandatory variables exist (clear message + `exit 1` if not), then `exec "$@"`. Used with `ENTRYPOINT ["docker-entrypoint.sh"]` + `CMD ["node", "<entry file>"]`. LF line endings.
+3. `frontend/Dockerfile` multi-stage: `build` stage (`node:20-alpine`, `npm ci`, `npm run build`, public `VITE_*` variables as `ARG`/`ENV`), final `nginx:alpine` stage that copies `dist/` and the Nginx template into `/etc/nginx/templates/`.
+4. `frontend/default.conf.template`:
    - `listen 80`, `root /usr/share/nginx/html`
-   - `location /` avec `try_files $uri $uri/ /index.html` (React Router)
-   - `location /api/` : `proxy_pass ${BACKEND_URL};`, `proxy_set_header Host $proxy_host;`, `proxy_ssl_server_name on;`, `X-Real-IP`, `X-Forwarded-For`, `X-Forwarded-Proto`, `client_max_body_size 10M`
-   - gzip activé, cache long pour `/assets/`, pas de cache pour `index.html`
-   - Ce fichier doit fonctionner à la fois en local (`BACKEND_URL=http://backend:<port>`) et sur Render (`BACKEND_URL=https://xxx.onrender.com`).
-5. `.dockerignore` dans `backend/` et `frontend/` : node_modules, dist, .env*, .git, logs, *.md.
-6. `docker-compose.yml` à la racine (mode Atlas) : `backend` (build, env_file `backend/.env`, pas de port publié, `restart: unless-stopped`) et `frontend` (build avec args `VITE_*` lus depuis un `.env` racine, port `8080:80`, `BACKEND_URL=http://backend:<port>`, `depends_on: backend`). Noms d'images : `lazher789/redstore-backend` et `lazher789/redstore-frontend`.
-7. `docker-compose.local.yml` (surcharge pour dev hors ligne) : service `mongo:7` avec volume nommé `mongo-data`, healthcheck `mongosh ping`, pas de port publié ; le backend utilise `MONGO_URI=mongodb://mongo:27017/redstore` et `depends_on` avec `condition: service_healthy`.
-8. `.gitattributes` : `*.sh text eol=lf`.
-9. `.env.example` (racine, backend, frontend) avec uniquement les noms des variables.
-10. Section "Docker" dans README.md : lancer avec Atlas (`docker compose up --build`), en local avec Mongo (`docker compose -f docker-compose.yml -f docker-compose.local.yml up --build`), lancer le seed, voir les logs, arrêter, différence entre `down` et `down -v`.
+   - `location /` with `try_files $uri $uri/ /index.html` (React Router)
+   - `location /api/`: `proxy_pass ${BACKEND_URL};`, `proxy_set_header Host $proxy_host;`, `proxy_ssl_server_name on;`, `X-Real-IP`, `X-Forwarded-For`, `X-Forwarded-Proto`, `client_max_body_size 10M`
+   - gzip enabled, long cache for `/assets/`, no cache for `index.html`
+   - This file must work both locally (`BACKEND_URL=http://backend:<port>`) and on Render (`BACKEND_URL=https://xxx.onrender.com`).
+5. `.dockerignore` in `backend/` and `frontend/`: node_modules, dist, .env*, .git, logs, *.md.
+6. `docker-compose.yml` at the root (Atlas mode): `backend` (build, env_file `backend/.env`, no published port, `restart: unless-stopped`) and `frontend` (build with `VITE_*` args read from a root `.env`, port `8080:80`, `BACKEND_URL=http://backend:<port>`, `depends_on: backend`). Image names: `YOUR_DOCKERHUB_USERNAME/redstore-backend` and `YOUR_DOCKERHUB_USERNAME/redstore-frontend`.
+7. `docker-compose.local.yml` (override for offline dev): `mongo:7` service with named volume `mongo-data`, healthcheck `mongosh ping`, no published port; the backend uses `MONGO_URI=mongodb://mongo:27017/redstore` and `depends_on` with `condition: service_healthy`.
+8. `.gitattributes`: `*.sh text eol=lf`.
+9. `.env.example` (root, backend, frontend) with variable names only.
+10. "Docker" section in README.md: run with Atlas (`docker compose up --build`), run locally with Mongo (`docker compose -f docker-compose.yml -f docker-compose.local.yml up --build`), run the seed, view logs, stop, difference between `down` and `down -v`.
 
-## Règles
-- Ne lis jamais, n'affiche jamais et ne modifie jamais le contenu des fichiers `.env`. Vérifie seulement qu'ils sont dans `.gitignore` et `.dockerignore`.
-- Aucun secret dans un Dockerfile ni dans une image. Côté frontend, seulement des clés publiques (Stripe `pk_...`).
-- Si du code applicatif doit changer (port, baseURL, CORS, uploads locaux), explique pourquoi et demande avant.
-- Ne supprime aucun fichier existant. Ne fais pas de commit.
+## Rules
+- Never read, display or modify the contents of `.env` files. Only verify they are in `.gitignore` and `.dockerignore`.
+- No secrets in a Dockerfile or in an image. On the frontend side, only public keys (Stripe `pk_...`).
+- If application code needs to change (port, baseURL, CORS, local uploads), explain why and ask first.
+- Do not delete any existing file. Do not commit.
 
-## Phase 3 — Vérification
-Docker Desktop est lancé. Exécute :
-1. `docker compose build` et corrige les erreurs
-2. `docker compose up -d`, puis `docker compose ps` (tout doit être running)
-3. `docker compose logs backend` : connexion MongoDB réussie
-4. Teste avec curl : `http://localhost:8080` (HTML), un endpoint `http://localhost:8080/api/...` (JSON), et une route React comme `http://localhost:8080/cart` (doit renvoyer index.html, pas 404)
-5. `docker images` : donne la taille des 2 images
+## Phase 3 — Verification
+Docker Desktop is running. Execute:
+1. `docker compose build` and fix any errors
+2. `docker compose up -d`, then `docker compose ps` (everything must be running)
+3. `docker compose logs backend`: successful MongoDB connection
+4. Test with curl: `http://localhost:8080` (HTML), an endpoint `http://localhost:8080/api/...` (JSON), and a React route like `http://localhost:8080/cart` (must return index.html, not 404)
+5. `docker images`: give the size of the 2 images
 6. `docker compose down`
-Termine par un résumé : fichiers créés, commandes à retenir, points à vérifier manuellement dans le navigateur (connexion, upload d'image admin, paiement Stripe test).
+End with a summary: files created, commands to remember, points to check manually in the browser (login, admin image upload, Stripe test payment).

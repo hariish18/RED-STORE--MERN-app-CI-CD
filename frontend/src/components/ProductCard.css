@@ -1,5 +1,5 @@
-/* Card produit partagee : page Shop, "You Might Also Like" (fiche produit)...
-   Deplacee depuis Shop.css pour garder un rendu identique partout. */
+/* Shared product card: Shop page, "You Might Also Like" (product details)...
+   Moved from Shop.css to keep consistent rendering everywhere. */
 
 /* --- PRODUCT CARD --- */
 .product-card {
@@ -14,7 +14,7 @@
     border: 1px solid rgba(0, 0, 0, 0.02);
 }
 
-/* meme langage de hover que .category-card (lift + ombre teintee rouge) */
+/* Same hover language as .category-card (lift + red-tinted shadow) */
 .product-card:hover {
     transform: translateY(-8px);
     box-shadow: 0 20px 40px rgba(230, 57, 70, 0.16);
@@ -44,7 +44,7 @@
     justify-content: center;
     overflow: hidden;
 
-    /* CORRECTION : Supprime tout espace en haut */
+    /* Fix: Removes any extra space on top */
     padding: 0;
     border: none;
 }
@@ -52,8 +52,8 @@
 .product-image {
     width: 100%;
     height: 100%;
-    object-fit: contain; /* Garde les proportions de l'image */
-    display: block;      /* Enlève tout espace vide sous l'image */
+    object-fit: contain; /* Keeps the image proportions */
+    display: block;      /* Removes any empty space below the image */
     transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
@@ -129,8 +129,8 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    /* reserve la hauteur de 2 lignes meme pour un titre court, pour que toutes les
-       cards de la grille restent alignees quelle que soit la longueur du titre */
+    /* Reserves space for 2 lines even for a short title, so all
+       cards in the grid stay aligned regardless of title length */
     min-height: 2.6em;
 }
 
@@ -185,10 +185,10 @@
     }
 }
 
-/* --- SUPPRIMER LES LIGNES BLEUES SOUS LES TEXTES --- */
+/* --- REMOVE UNDERLINES UNDER TEXT --- */
 .product-card__link {
-    text-decoration: none !important; /* Enlève le soulignement des liens */
-    color: inherit !important;         /* Garde la couleur du texte (pas de bleu) */
+    text-decoration: none !important; /* Removes link underlines */
+    color: inherit !important;         /* Keeps text color (prevents default link color) */
 }
 
 .product-card__link:hover {

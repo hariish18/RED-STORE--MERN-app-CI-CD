@@ -1,7 +1,7 @@
-// Theme Ant Design aligne sur les variables de theme.css, pour que les composants antd
-// (Cart, ForgotPassword, ResetPassword...) gardent le rouge et la typo de Red Store.
-// Les valeurs sont recopiees (et non lues via var(--...)) car antd derive ses
-// couleurs de survol/actives a partir de ces hex au moment du calcul du theme.
+// Ant Design theme aligned with theme.css variables, so that antd components
+// (Cart, ForgotPassword, ResetPassword...) keep the Red Store red and typography.
+// Values are hardcoded (not read via var(--...)) because antd derives its
+// hover/active colors from these hex values at theme computation time.
 const RED_STORE_PRIMARY = "#e63946"; // --color-primary
 const RED_STORE_PRIMARY_DARK = "#c1121f"; // --color-primary-dark
 
@@ -15,13 +15,13 @@ export const antdTheme = {
         colorBorderSecondary: "#e5e5e5",
         colorSuccess: "#2a9d8f", // --color-success
         colorError: "#d62828", // --color-error
-        // police reellement rendue sur le site (index.css : body/titres en Poppins)
+        // font actually rendered on the site (index.css: body/headings use Poppins)
         fontFamily: "'Poppins', sans-serif",
         borderRadius: 8, // --radius
     },
     components: {
-        // un bouton "danger" (ex. Proceed to Checkout) reste dans le rouge de la marque,
-        // pas dans le rouge d'erreur (--color-error) utilise pour les messages
+        // a "danger" button (e.g. Proceed to Checkout) stays in the brand red,
+        // not in the error red (--color-error) used for messages
         Button: {
             colorError: RED_STORE_PRIMARY,
             colorErrorHover: RED_STORE_PRIMARY_DARK,

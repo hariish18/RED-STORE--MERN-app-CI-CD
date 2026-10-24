@@ -1,9 +1,9 @@
-// Chargé avant chaque fichier de test (jest "setupFilesAfterEnv") :
-// mocks des services externes + base MongoDB en mémoire, vidée entre chaque test.
+// Loaded before each test file (Jest "setupFilesAfterEnv"):
+// External service mocks + in-memory MongoDB database, emptied between tests.
 const mongoose = require("mongoose");
 const { MongoMemoryServer } = require("mongodb-memory-server");
 
-// ---------- Services externes : aucun appel réseau réel ----------
+// ---------- External services: no real network calls ----------
 jest.mock("cloudinary", () => ({
     v2: {
         config: jest.fn(),
@@ -35,7 +35,7 @@ jest.mock("@anthropic-ai/sdk", () => {
     const Anthropic = jest.fn().mockImplementation(() => ({
         messages: {
             create: jest.fn().mockResolvedValue({
-                content: [{ type: "text", text: "Description de test" }],
+                content: [{ type: "text", text: "Test description" }],
             }),
         },
     }));
@@ -46,7 +46,7 @@ jest.mock("@anthropic-ai/sdk", () => {
     return Anthropic;
 });
 
-// ---------- Base MongoDB en mémoire ----------
+// ---------- In-memory MongoDB database ----------
 let mongoServer;
 
 beforeAll(async () => {

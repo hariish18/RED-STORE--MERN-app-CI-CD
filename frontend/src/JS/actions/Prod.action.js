@@ -19,12 +19,12 @@ import {
 import { API_URL as BASE_URL } from "../../utils/api";
 export const API_URL = `${BASE_URL}/api/product`;
 
-// header d'authentification (token brut, sans préfixe Bearer)
+// authentication header (raw token, without Bearer prefix)
 const authConfig = () => ({
     headers: { authorization: localStorage.getItem("token") },
 });
 
-// GET ALL PRODUCTS (filtres optionnels : { gender, category })
+// GET ALL PRODUCTS (optional filters: { gender, category })
 export const getAllProducts = (filters = {}) => async (dispatch) => {
     dispatch({ type: LOAD_PROD });
     try {
@@ -36,13 +36,13 @@ export const getAllProducts = (filters = {}) => async (dispatch) => {
         dispatch({ type: GET_PRODUCTS, payload: data.Prod });
     } catch (error) {
         dispatch({ type: FAIL_PROD, payload: error.response?.data?.msg });
-        console.error("Erreur:", error.response?.data || error.message);
+        console.error("Error:", error.response?.data || error.message);
     }
 };
 
-// SEARCH PRODUCTS (titre/description/categorie/marque) - meme forme de payload que
-// getAllProducts, reutilise donc le meme type d'action (productReducer n'a rien a savoir
-// de plus)
+// SEARCH PRODUCTS (title/description/category/brand) - same payload shape as
+// getAllProducts, so it reuses the same action type (productReducer doesn't need
+// to know anything more)
 export const searchProducts = (q) => async (dispatch) => {
     dispatch({ type: LOAD_PROD });
     try {
@@ -50,13 +50,13 @@ export const searchProducts = (q) => async (dispatch) => {
         dispatch({ type: GET_PRODUCTS, payload: data.Prod });
     } catch (error) {
         dispatch({ type: FAIL_PROD, payload: error.response?.data?.msg });
-        console.error("Erreur:", error.response?.data || error.message);
+        console.error("Error:", error.response?.data || error.message);
     }
 };
 
-// GET NEW ARRIVALS (page d'accueil) - produits les plus recents, en nombre limite.
-// Etat dedie (voir Prod.actionType.js) pour ne pas ecraser `products`, deja utilise
-// par ProductDetail pour les "related products".
+// GET NEW ARRIVALS (home page) - most recent products, limited count.
+// Dedicated state (see Prod.actionType.js) to avoid overwriting `products`, already used
+// by ProductDetail for "related products".
 export const getNewArrivals = (limit = 8) => async (dispatch) => {
     dispatch({ type: LOAD_NEW_ARRIVALS });
     try {
@@ -64,12 +64,12 @@ export const getNewArrivals = (limit = 8) => async (dispatch) => {
         dispatch({ type: GET_NEW_ARRIVALS, payload: data.Prod });
     } catch (error) {
         dispatch({ type: FAIL_NEW_ARRIVALS, payload: error.response?.data?.msg });
-        console.error("Erreur:", error.response?.data || error.message);
+        console.error("Error:", error.response?.data || error.message);
     }
 };
 
-// GET SALE PRODUCTS (page /sale) - produits avec isOnSale: true. Etat dedie
-// (voir Prod.actionType.js), meme raisonnement que getNewArrivals.
+// GET SALE PRODUCTS (/sale page) - products with isOnSale: true. Dedicated state
+// (see Prod.actionType.js), same reasoning as getNewArrivals.
 export const getSaleProducts = () => async (dispatch) => {
     dispatch({ type: LOAD_SALE_PRODUCTS });
     try {
@@ -77,7 +77,7 @@ export const getSaleProducts = () => async (dispatch) => {
         dispatch({ type: GET_SALE_PRODUCTS, payload: data.Prod });
     } catch (error) {
         dispatch({ type: FAIL_SALE_PRODUCTS, payload: error.response?.data?.msg });
-        console.error("Erreur:", error.response?.data || error.message);
+        console.error("Error:", error.response?.data || error.message);
     }
 };
 
@@ -89,11 +89,11 @@ export const getProductById = (id) => async (dispatch) => {
         dispatch({ type: GET_ONE_PRODUCT, payload: data.prodToGet });
     } catch (error) {
         dispatch({ type: FAIL_PROD, payload: error.response?.data?.msg });
-        console.error("Erreur:", error.response?.data || error.message);
+        console.error("Error:", error.response?.data || error.message);
     }
 };
 
-// GET MY PRODUCTS (produits créés par l'utilisateur connecté)
+// GET MY PRODUCTS (products created by the logged-in user)
 export const getMyProducts = () => async (dispatch) => {
     dispatch({ type: LOAD_PROD });
     try {
@@ -101,11 +101,11 @@ export const getMyProducts = () => async (dispatch) => {
         dispatch({ type: GET_MY_PRODUCT, payload: data.myListProd });
     } catch (error) {
         dispatch({ type: FAIL_PROD, payload: error.response?.data?.msg });
-        console.error("Erreur:", error.response?.data || error.message);
+        console.error("Error:", error.response?.data || error.message);
     }
 };
 
-// ADD PRODUCT (newProduct peut etre un objet JSON ou un FormData si des images sont jointes)
+// ADD PRODUCT (newProduct can be a JSON object or FormData if images are attached)
 export const addProduct = (newProduct) => async (dispatch) => {
     dispatch({ type: LOAD_PROD });
     try {
@@ -115,7 +115,7 @@ export const addProduct = (newProduct) => async (dispatch) => {
     } catch (error) {
         const msg = error.response?.data?.msg || "Failed to add product";
         dispatch({ type: FAIL_PROD, payload: msg });
-        console.error("Erreur:", error.response?.data || error.message);
+        console.error("Error:", error.response?.data || error.message);
         return { success: false, error: msg };
     }
 };
@@ -128,7 +128,7 @@ export const editProduct = (id, updatedProduct) => async (dispatch) => {
         dispatch({ type: EDIT_PRODUCT, payload: data.prodToUpdate });
     } catch (error) {
         dispatch({ type: FAIL_PROD, payload: error.response?.data?.msg });
-        console.error("Erreur:", error.response?.data || error.message);
+        console.error("Error:", error.response?.data || error.message);
     }
 };
 
@@ -140,6 +140,6 @@ export const deleteProduct = (id) => async (dispatch) => {
         dispatch({ type: DELETE_PRODUCT, payload: id });
     } catch (error) {
         dispatch({ type: FAIL_PROD, payload: error.response?.data?.msg });
-        console.error("Erreur:", error.response?.data || error.message);
+        console.error("Error:", error.response?.data || error.message);
     }
 };

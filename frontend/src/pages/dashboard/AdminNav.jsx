@@ -6,7 +6,7 @@ const TABS = [
     { to: "/dashboard/admin/products", label: "Products", icon: Package },
 ];
 
-//onglets partages entre les pages du dashboard admin
+// Tabs shared between admin dashboard pages
 export default function AdminNav() {
     return (
         <nav className="admin-nav" aria-label="Admin sections">

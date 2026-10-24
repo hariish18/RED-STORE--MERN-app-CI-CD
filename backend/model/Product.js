@@ -23,7 +23,7 @@ const productSchema = new mongoose.Schema({
         type : String,
 
     },
-    //galerie d'images additionnelles
+    // Additional image gallery
     images :{
         type : [String],
         default : [],
@@ -37,13 +37,13 @@ const productSchema = new mongoose.Schema({
         trim : true,
         default : "shoes",
     },
-    //pour filtrer Men / Women / Kids dans le catalogue
+    // To filter Men / Women / Kids in the catalog
     gender :{
         type : String,
         enum : ["men", "women", "kids", "unisex"],
         default : "unisex",
     },
-    //stock disponible par pointure
+    // Available stock per shoe size
     sizes :{
         type : [
             {
@@ -53,29 +53,29 @@ const productSchema = new mongoose.Schema({
         ],
         default : [],
     },
-    //pour faire relation entre collection User et product
+    // Relationship between User collection and product
     createdBy :{
         type : mongoose.Schema.Types.ObjectId,
         ref : "user",
     },
-    //prix avant reduction, affiche barre a cote de price sur la page Sale
+    // Price before discount, displayed strikethrough next to price on Sale page
     originalPrice :{
         type : Number,
     },
-    //pourcentage de reduction affiche sur le badge produit (ex: 25 -> "-25%")
+    // Discount percentage displayed on product badge (e.g. 25 -> "-25%")
     discountPercentage :{
         type : Number,
         min : 0,
         max : 100,
     },
-    //true pour faire apparaitre le produit dans /api/product/allProd?onSale=true
+    // True to include product in /api/product/allProd?onSale=true
     isOnSale :{
         type : Boolean,
         default : false,
     },
-    //point focal optionnel de imageProd pour les miniatures recadrees (panier...) : x/y en %
-    //de l'image, zoom >= 1. Utile quand la photo est une mise en scene (ballon, decor) et que
-    //le recadrage centre par defaut ne montre pas assez la chaussure. Absent = centre, sans zoom.
+    // Optional focal point of imageProd for cropped thumbnails (cart...): x/y in %
+    // of image, zoom >= 1. Useful when photo has wider staging (decor) and
+    // default center crop doesn't show shoe clearly. Omitted = center, without zoom.
     imageFocus :{
         x : { type : Number, min : 0, max : 100 },
         y : { type : Number, min : 0, max : 100 },

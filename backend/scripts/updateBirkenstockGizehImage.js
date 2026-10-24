@@ -1,9 +1,8 @@
-// Script ponctuel : met a jour uniquement le champ imageProd du produit
-// "Birkenstock Gizeh" deja en base (l'ancienne image montrait des jambes/
-// pieds sur une plage, pas un plan produit). Ne touche a aucun autre champ
-// ni aucun autre produit.
+// Utility script: updates only the imageProd field of "Birkenstock Gizeh"
+// in the database (previous image showed legs/feet on a beach rather than a product shot).
+// Leaves all other fields and products untouched.
 //
-// Usage : node scripts/updateBirkenstockGizehImage.js
+// Usage: node scripts/updateBirkenstockGizehImage.js
 
 require("dotenv").config({ path: require("path").resolve(__dirname, "../.env") });
 
@@ -24,9 +23,9 @@ const updateImage = async () => {
     );
 
     if (!product) {
-        console.log(`Introuvable : ${TITLE}`);
+        console.log(`Not found: ${TITLE}`);
     } else {
-        console.log(`Image mise a jour pour "${TITLE}" : ${product.imageProd}`);
+        console.log(`Image updated for "${TITLE}": ${product.imageProd}`);
     }
 
     await mongoose.disconnect();
@@ -34,6 +33,6 @@ const updateImage = async () => {
 };
 
 updateImage().catch((error) => {
-    console.error("Le script a echoue :", error);
+    console.error("Script failed:", error);
     process.exit(1);
 });

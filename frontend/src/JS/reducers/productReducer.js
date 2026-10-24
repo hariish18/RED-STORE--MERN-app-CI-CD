@@ -21,12 +21,12 @@ const initialState = {
     product: null,
     myProducts: [],
     errors: null,
-    // etat dedie a la section "New Arrivals" (home page) - separe de `products`
-    // pour ne pas interferer avec les "related products" de ProductDetail
+    // dedicated state for the "New Arrivals" section (home page) - separate from `products`
+    // to avoid interfering with the "related products" of ProductDetail
     isLoadNewArrivals: false,
     newArrivals: [],
     newArrivalsErrors: null,
-    // etat dedie a la page "Sale" - meme raisonnement que New Arrivals ci-dessus
+    // dedicated state for the "Sale" page - same reasoning as New Arrivals above
     isLoadSaleProducts: false,
     saleProducts: [],
     saleProductsErrors: null,

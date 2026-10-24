@@ -5,9 +5,9 @@ import { Heart, ShoppingBag } from 'lucide-react';
 import { addToWishlist, removeFromWishlist } from '../JS/actions/wishlist.action';
 import { EASE_SMOOTH, SPRING_BOUNCY } from '../utils/motion';
 import { formatPrice } from '../utils/format';
-// reutilise exactement le meme style de card que "New Arrivals" (image, coeur wishlist,
-// quick-add panier, titre, prix) pour un rendu identique partout ou une grille de
-// produits est affichee (wishlist, "You Might Also Like"...)
+// Reuses the exact same card style as "New Arrivals" (image, wishlist heart,
+// quick-add cart button, title, price) for consistent rendering everywhere a product
+// grid is displayed (wishlist, "You Might Also Like"...)
 import './NewArrivalsSection.css';
 
 const MotionLink = motion(Link);

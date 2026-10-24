@@ -3,7 +3,7 @@ const PaymentIntent = require("../model/PaymentIntent");
 
 const DECLINED_TEST_CARD = "4000000000000002";
 
-// createPaymentIntent est géré dans routes/payment.routes.js
+// createPaymentIntent is handled in routes/payment.routes.js
 exports.processPayment = async (req, res) => {
     try {
         const { method, amount, cardNumber, expiry, cvv } = req.body;
@@ -28,7 +28,7 @@ exports.processPayment = async (req, res) => {
             }
         }
 
-        // simule la latence d'une vraie passerelle de paiement
+        // Simulates latency of a real payment gateway
         await new Promise((resolve) => setTimeout(resolve, 600));
 
         const transactionId = `MOCK-${crypto.randomBytes(8).toString("hex").toUpperCase()}`;

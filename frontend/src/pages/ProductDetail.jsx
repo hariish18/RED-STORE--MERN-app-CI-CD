@@ -13,8 +13,8 @@ import Reveal from "../components/Reveal";
 import { formatPrice } from "../utils/format";
 import "./ProductDetail.css";
 
-//les 7 tailles qui doivent toujours apparaitre sur CHAQUE page produit, meme si aucun
-//produit de la categorie ne les stocke (affichees desactivees plutot qu'omises)
+//The 7 sizes that must always appear on EACH product page, even if none
+//of the products in that category stock them (displayed disabled rather than hidden)
 const REQUIRED_SIZES = [40, 41, 42, 43, 44, 45, 46];
 
 const ProductDetailView = ({ id }) => {
@@ -40,10 +40,10 @@ const ProductDetailView = ({ id }) => {
 
     const gallery = [product.imageProd, ...(product.images || [])].filter(Boolean);
     const sizeInfo = product.sizes || [];
-    // taille "maitresse" par categorie (gender) : union des 7 tailles obligatoires (REQUIRED_SIZES)
-    // et de toutes les tailles reellement utilisees par les produits de la meme categorie, pour que
-    // la grille affiche TOUJOURS les 7 tailles requises (desactivees si personne ne les stocke) sans
-    // jamais cacher une taille reellement en stock pour cette categorie (ex: femmes 36-39, enfants 18-35)
+    // master size grid per category (gender): union of the 7 required sizes (REQUIRED_SIZES)
+    // and all sizes actually used by products in the same category, so that
+    // the grid ALWAYS shows the 7 required sizes (disabled if none stock them) without
+    // ever hiding a size that is truly in stock for that category (e.g. women 36-39, kids 18-35)
     const sameCategoryProducts = products.length > 0 ? products.filter((p) => p.gender === product.gender) : [product];
     const categorySizes = [
         ...new Set([...REQUIRED_SIZES, ...sameCategoryProducts.flatMap((p) => (p.sizes || []).map((s) => s.size))]),
@@ -67,11 +67,11 @@ const ProductDetailView = ({ id }) => {
         setAdding(true);
         const result = await dispatch(addToCart(product, selectedSize));
         if (result.success) {
-            toast.success("Produit ajouté au panier !");
+            toast.success("Product added to cart!");
             setAdded(true);
             setTimeout(() => setAdded(false), 2000);
         } else {
-            toast.error(result.error || "Erreur lors de l'ajout au panier");
+            toast.error(result.error || "Error adding to cart");
         }
         setAdding(false);
     };

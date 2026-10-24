@@ -1,5 +1,5 @@
 .sale-page {
-    /* degage la navbar fixe, comme .shop-page */
+    /* Clears fixed navbar, like .shop-page */
     padding: 120px var(--space-4) var(--space-8);
     max-width: 1400px;
     margin: 0 auto;
@@ -30,8 +30,8 @@
     }
 }
 
-/* badge de reduction ("-23%"), meme emplacement que le badge "New" des New
-   Arrivals mais couleur/texte propres a la page Sale */
+/* Discount badge ("-23%"), same placement as "New" badge in New
+   Arrivals but distinct color/text for Sale page */
 .sale-card__badge {
     position: absolute;
     top: var(--space-2);

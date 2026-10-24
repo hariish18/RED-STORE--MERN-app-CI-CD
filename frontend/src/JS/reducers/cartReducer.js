@@ -1,8 +1,8 @@
 import { LOAD_CART, SET_CART, FAIL_CART, CLEAR_CART } from "../actionsType/cart.actionType";
 
-// isLoad demarre a true (pas false) : le panier est charge des le montage de l'app
-// (voir mergeServerCart dans auth.action.js) - evite un flash "panier vide" avant que
-// le premier chargement ait eu le temps d'aboutir
+// isLoad starts at true (not false): the cart is loaded on app mount
+// (see mergeServerCart in auth.action.js) - avoids a "cart empty" flash before
+// the first load has had time to complete
 const initialState = {
     isLoad: true,
     items: [], // { productId, title, price, image, brand, size, quantity, stock }

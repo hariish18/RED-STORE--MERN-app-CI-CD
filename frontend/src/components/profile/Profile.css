@@ -1,6 +1,6 @@
-/* styles partages entre Profile.jsx et ses sous-composants (header, tabs,
-   formulaire d'infos, commandes, adresses) : un seul fichier car ils ne
-   sont jamais utilises hors de la page profil */
+/* Styles shared between Profile.jsx and its subcomponents (header, tabs,
+   info form, orders, addresses): single file as they are
+   never used outside the profile page */
 
 .profile-page {
     min-height: calc(100svh - 76px);
@@ -214,7 +214,7 @@
     }
 }
 
-/* --- EMPTY STATE (reutilise par Orders et Addresses) --- */
+/* --- EMPTY STATE (reused by Orders and Addresses) --- */
 
 .profile-empty {
     display: flex;
@@ -421,7 +421,7 @@
     }
 }
 
-/* --- SKELETON (etat de chargement, avant que `current()` resolve) --- */
+/* --- SKELETON (loading state, before `current()` resolves) --- */
 
 .profile-skeleton__header {
     display: flex;

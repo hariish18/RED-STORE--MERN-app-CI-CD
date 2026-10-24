@@ -1,12 +1,12 @@
-/* --- HERO BANNIERE (meme langage visuel que CategoriesSection : photo +
-   degrade sombre bas->haut + texte blanc) --- */
+/* --- HERO BANNER (same visual language as CategoriesSection: photo +
+   dark gradient bottom->top + white text) --- */
 .shop-hero {
     position: relative;
     width: 100%;
     height: 360px;
-    /* .App main degage deja 76px pour la navbar fixed (App.css) ; la navbar
-       reelle mesure 85px (padding var(--space-2) + min-height 52px), donc
-       9px suffisent ici pour coller le hero juste sous la navbar. */
+    /* .App main already clears 76px for the fixed navbar (App.css); the real
+       navbar measures 85px (padding var(--space-2) + min-height 52px), so
+       9px is sufficient here to align hero right under the navbar. */
     margin-top: 9px;
     overflow: hidden;
     display: flex;
@@ -24,8 +24,8 @@
 .shop-hero__overlay {
     position: absolute;
     inset: 0;
-    /* degrade leger partage par les heros Men/Women/Kids : transparent sur presque
-       toute la hauteur, il ne s'assombrit qu'en bas pour garder le texte blanc lisible */
+    /* Subtle gradient shared by Men/Women/Kids heroes: transparent across almost
+       the entire height, only darkening at the bottom to keep white text legible */
     background: linear-gradient(to top, rgba(23, 16, 15, 0.55) 0%, rgba(23, 16, 15, 0.18) 30%, rgba(23, 16, 15, 0) 60%);
 }
 
@@ -82,7 +82,7 @@
 
 }
 
-/* --- BARRE META (chips de filtres actifs + compteur/tri) sous le hero --- */
+/* --- META BAR (active filter chips + counter/sorting) below hero --- */
 .shop-meta {
     display: flex;
     flex-direction: column;
@@ -106,7 +106,7 @@
     font-size: 0.95rem;
 }
 
-/* --- CHIPS DE FILTRES ACTIFS --- */
+/* --- ACTIVE FILTER CHIPS --- */
 .filter-chips {
     display: flex;
     flex-wrap: wrap;
@@ -133,7 +133,7 @@
     border-color: var(--color-primary);
 }
 
-/* --- TRI --- */
+/* --- SORTING --- */
 .sort-control {
     display: flex;
     align-items: center;
@@ -236,7 +236,7 @@
     transition: all var(--transition);
 }
 
-/* survol avant selection : simple liseré rouge, pas encore l'etat actif plein */
+/* hover before selection: simple red border, not yet the full active state */
 .size-btn:hover:not(.active) {
     background: #e9ecef;
     border-color: var(--color-primary);

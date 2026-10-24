@@ -14,7 +14,7 @@ import "./Cart.css";
 
 const { Title, Text } = Typography;
 
-// etat "page vide" commun (non connecte, erreur, panier vide) : Empty antd + action
+// Common "empty page" state (not logged in, error, empty cart): antd Empty + action
 const CartMessage = ({ title, description, action }) => (
     <div className="cart-page">
         <Reveal className="cart-empty">
@@ -54,16 +54,16 @@ const Cart = () => {
 
     const [updatingKey, setUpdatingKey] = useState(null);
     const [promoError, setPromoError] = useState("");
-    // incremente apres un echec de mise a jour pour remonter les InputNumber (non controles)
-    // et effacer une saisie refusee par le serveur
+    // increments after a failed update to reset the InputNumber (uncontrolled)
+    // and clear an input rejected by the server
     const [resetTick, setResetTick] = useState(0);
-    // verrou synchrone : un clic sur -/+ suivi du blur du champ ne doit pas envoyer
-    // deux fois la meme mise a jour pendant que la premiere requete est en vol
+    // synchronous lock: a click on -/+ followed by blur should not send
+    // the same update twice while the first request is in flight
     const pendingRef = useRef(false);
 
     const itemKey = (item) => `${item.productId}-${item.size ?? "default"}`;
 
-    // point focal du produit (imageFocus, optionnel) -> variables CSS lues par .cart-line__thumb
+    // focal point of the product image (imageFocus, optional) -> CSS variables read by .cart-line__thumb
     const thumbStyle = (focus) =>
         focus?.x != null && focus?.y != null
             ? { "--thumb-focus": `${focus.x}% ${focus.y}%`, "--thumb-zoom": focus.zoom ?? 1 }
@@ -73,7 +73,7 @@ const Cart = () => {
         if (isAuth && token) dispatch(getCart());
     }, [dispatch, isAuth, token]);
 
-    // l'API panier travaille en delta (+n / -n) : on envoie l'ecart avec la quantite actuelle
+    // The cart API works with deltas (+n / -n): we send the difference from the current quantity
     const handleQuantityChange = async (item, nextQuantity) => {
         const next = Math.round(Number(nextQuantity));
         if (!Number.isFinite(next) || next < 1 || next === item.quantity) {
@@ -86,7 +86,7 @@ const Cart = () => {
         setUpdatingKey(key);
         const result = await dispatch(updateCartQuantity(item.productId, item.size, next - item.quantity));
         if (!result.success) {
-            toast.error(result.error || "Erreur lors de la mise à jour du panier");
+            toast.error(result.error || "Error updating cart");
             setResetTick((t) => t + 1);
         }
         pendingRef.current = false;
@@ -97,13 +97,13 @@ const Cart = () => {
         const key = itemKey(item);
         setUpdatingKey(key);
         const result = await dispatch(removeFromCart(item.productId, item.size));
-        if (result.success) toast.success("Article retiré du panier");
-        else toast.error(result.error || "Erreur lors de la suppression");
+        if (result.success) toast.success("Item removed from cart");
+        else toast.error(result.error || "Error removing item");
         setUpdatingKey(null);
     };
 
-    // aucun code promo n'existe encore cote backend : on valide la saisie et on
-    // l'indique clairement plutot que d'appliquer une fausse remise
+    // No promo codes exist yet on the backend: we validate the input and
+    // clearly indicate it rather than applying a fake discount
     const handleApplyPromo = (value) => {
         const code = value.trim();
         setPromoError(code ? `"${code}" is not a valid promo code` : "Please enter a promo code");
@@ -193,7 +193,7 @@ const Cart = () => {
                             {items.map((item) => {
                                 const key = itemKey(item);
                                 const isUpdating = updatingKey === key;
-                                // stock renvoye par getCart ; si inconnu, pas de plafond cote client
+                                // stock returned by getCart; if unknown, no client-side cap
                                 const maxQuantity = item.stock > 0 ? Math.max(item.stock, item.quantity) : undefined;
 
                                 return (
@@ -237,8 +237,8 @@ const Cart = () => {
                                                     defaultValue={item.quantity}
                                                     disabled={isUpdating}
                                                     mode="spinner"
-                                                    // fleches/boutons : mise a jour immediate ; saisie clavier :
-                                                    // validee a la sortie du champ ou sur Entree (pas a chaque touche)
+                                                    // arrows/buttons: immediate update; keyboard input:
+                                                    // validated on field blur or Enter (not on every keystroke)
                                                     onStep={(value) => handleQuantityChange(item, value)}
                                                     onPressEnter={(e) => e.target.blur()}
                                                     onBlur={(e) => handleQuantityChange(item, e.target.value)}

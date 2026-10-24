@@ -1,5 +1,5 @@
 .about-page {
-    /* degage la navbar fixe, comme .shop-page / .sale-page */
+    /* Clears fixed navbar, like .shop-page / .sale-page */
     padding-top: 120px;
 }
 
@@ -14,7 +14,7 @@
     line-height: 1.6;
 }
 
-/* --- Notre histoire --- */
+/* --- Our Story --- */
 .about-story-section {
     display: grid;
     grid-template-columns: 1fr;
@@ -61,7 +61,7 @@
     object-fit: cover;
 }
 
-/* --- CTA final --- */
+/* --- Final CTA --- */
 .about-cta-section {
     padding: var(--space-8) var(--space-3);
     text-align: center;
@@ -75,8 +75,8 @@
     margin-bottom: var(--space-3);
 }
 
-/* meme style visuel que le bouton "Shop Now" du Hero (Home.css .hero-btn),
-   duplique ici pour ne pas importer toute la feuille de style de la home */
+/* Same visual style as the "Shop Now" Hero button (Home.css .hero-btn),
+   duplicated here to avoid importing the entire home stylesheet */
 .about-cta__btn {
     display: inline-block;
     background-color: #ff5e5e;

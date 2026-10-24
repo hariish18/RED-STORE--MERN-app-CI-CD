@@ -33,10 +33,10 @@
   --transition: 240ms ease;
 }
 
-/* Coupe toutes les transitions CSS basees sur var(--transition) en un seul
-   endroit pour les utilisateurs qui demandent moins de mouvement (les
-   animations Framer Motion gerent deja prefers-reduced-motion elles-memes
-   via useReducedMotion(), voir PageTransition/Reveal/ProductCard). */
+/* Disables all CSS transitions based on var(--transition) in a single
+   place for users who prefer reduced motion (Framer Motion
+   animations already handle prefers-reduced-motion themselves
+   via useReducedMotion(), see PageTransition/Reveal/ProductCard). */
 @media (prefers-reduced-motion: reduce) {
   :root {
     --transition: 0ms;

@@ -5,7 +5,7 @@ import { X } from "lucide-react";
 import { API_URL } from "../utils/api";
 import { formatPrice } from "../utils/format";
 import ProductCard from "../components/ProductCard";
-import "./Shop.css"; // IMPORT CRUCIAL : Le CSS classique
+import "./Shop.css"; // CRITICAL IMPORT: the classic CSS
 
 const MOCK_PRODUCTS = [
     {
@@ -72,34 +72,34 @@ const GENDER_LABELS = {
     kids: "Kids' Shoes",
 };
 
-// meme trio d'images que CategoriesSection (coherence visuelle entre la carte
-// "Men/Women/Kids" de la home et la banniere hero de la page Shop correspondante)
+// same trio of images as CategoriesSection (visual consistency between the
+// "Men/Women/Kids" card on the home page and the hero banner of the corresponding Shop page)
 const HERO_IMAGES = {
     men: "https://images.unsplash.com/photo-1533867617858-e7b97e060509?q=80&w=2000&auto=format&fit=crop",
-    // meme photo que la carte "Women" de CategoriesSection (home) : verifiee
-    // sans logo ni texte de marque visible.
+    // same photo as the "Women" card of CategoriesSection (home): verified
+    // with no logo or visible brand text.
     women: "https://images.unsplash.com/photo-1524553879936-2ff074ae5816?fm=jpg&q=80&w=2000&auto=format&fit=crop",
     kids: "https://images.unsplash.com/photo-1552912276-56ef47874741?fm=jpg&q=80&w=2000&auto=format&fit=crop",
-    // vue sans ?gender= ("All Shoes").
-    // photo-1600455745764 porte du texte de marque : "Twinkle toes" + "Skechers" sur
-    // les languettes (~y 1100-1320 sur la version 2000px) et "Twinkle toes" sur le
-    // pare-choc de la semelle droite (~y 1920-1970). On ne garde donc que la bande
-    // du milieu (lacets + bouts stras, aucun texte lisible - verifie a pleine
-    // resolution) via le parametre rect d'Unsplash : x,y,largeur,hauteur en pixels
-    // de l'ORIGINAL (4016x6016). Cette bande est plus large que le hero (ratio
-    // ~3.9), donc le navigateur ne rogne que les cotes : le texte ne peut pas
-    // reapparaitre, quelle que soit la largeur d'ecran.
+    // view without ?gender= ("All Shoes").
+    // photo-1600455745764 contains brand text: "Twinkle toes" + "Skechers" on
+    // the tongues (~y 1100-1320 on the 2000px version) and "Twinkle toes" on the
+    // right sole bumper (~y 1920-1970). So we only keep the middle band
+    // (laces + rhinestone tips, no readable text - verified at full
+    // resolution) via the Unsplash rect parameter: x,y,width,height in pixels
+    // of the ORIGINAL (4016x6016). This band is wider than the hero (ratio
+    // ~3.9), so the browser only crops the sides: the text cannot
+    // reappear, regardless of screen width.
     all: "https://images.unsplash.com/photo-1600455745764-ebd75e6cd567?rect=0,2691,4016,1024&fm=jpg&q=80&w=2000&auto=format&fit=crop",
 };
 
-// banniere de la page dediee /new-arrivals (pas de ?gender= : tous les genres).
-// Photo sombre sans aucun texte de marque visible (verifiee), pour que le titre
-// blanc reste lisible ; le degrade .shop-hero__overlay fait le reste.
+// banner for the dedicated /new-arrivals page (no ?gender=: all genders).
+// Dark photo with no visible brand text (verified), so that the white title
+// remains readable; the .shop-hero__overlay gradient does the rest.
 const NEW_ARRIVALS_HERO_IMAGE =
     "https://images.unsplash.com/photo-1632761298177-51e35403e27e?fm=jpg&q=80&w=2000&auto=format&fit=crop";
 const NEW_ARRIVALS_HERO_POSITION = "50% 62%";
 
-// nombre de produits recuperes (les plus recents d'abord) sur /new-arrivals
+// number of products fetched (most recent first) on /new-arrivals
 const NEW_ARRIVALS_LIMIT = 24;
 
 const HERO_EYEBROWS = {
@@ -108,18 +108,18 @@ const HERO_EYEBROWS = {
     kids: "Kids' Collection",
 };
 
-// l'ancienne photo Women etait un portrait recadre plus bas pour rester visible ;
-// la photo actuelle (meme que CategoriesSection, format paysage) est bien cadree
-// par le centre par defaut, donc plus besoin d'override de position ici.
+// the old Women photo was a portrait cropped lower to stay visible;
+// the current photo (same as CategoriesSection, landscape format) is well framed
+// by center default, so no position override is needed here.
 const HERO_IMAGE_POSITIONS = {};
 
-// newArrivals : true sur la route /new-arrivals. Meme page et meme mise en page que
-// /shop, mais tous genres confondus, tri "newest" par defaut et banniere dediee.
+// newArrivals: true on the /new-arrivals route. Same page and layout as
+// /shop, but all genders combined, "newest" sort by default and dedicated banner.
 const Shop = ({ newArrivals = false }) => {
     const [searchParams] = useSearchParams();
-    // sans ?gender= la page liste TOUS les produits (Men + Women + Kids) ;
-    // c'est la destination de "All Shoes" et des liens "/shop" generiques.
-    // /new-arrivals ignore ?gender= : "across all categories".
+    // without ?gender= the page lists ALL products (Men + Women + Kids);
+    // this is the destination for "All Shoes" and generic "/shop" links.
+    // /new-arrivals ignores ?gender=: "across all categories".
     const genderParam = newArrivals ? null : searchParams.get("gender");
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
@@ -141,7 +141,7 @@ const Shop = ({ newArrivals = false }) => {
             setLoading(true);
             try {
                 const res = await axios.get(`${API_URL}/api/product/allProd`, {
-                    // axios n'envoie pas un param undefined : aucun filtre de genre cote API
+                    // axios does not send an undefined param: no gender filter on the API side
                     params: {
                         gender: genderParam || undefined,
                         sort: newArrivals ? "newest" : undefined,
@@ -152,13 +152,13 @@ const Shop = ({ newArrivals = false }) => {
                 const normalized = data.length > 0 ? data : MOCK_PRODUCTS;
                 setProducts(normalized);
                 setFilteredProducts(normalized);
-                // le plafond du slider doit couvrir le produit le plus cher, sinon les
-                // articles au-dessus de l'ancien plafond fixe restent inaccessibles
+                // the slider ceiling must cover the most expensive product, otherwise
+                // items above the old fixed ceiling remain inaccessible
                 const ceiling = Math.max(200, ...normalized.map((p) => Math.ceil(p.price || 0)));
                 setPriceCeiling(ceiling);
                 setMaxPrice(ceiling);
             } catch (err) {
-                console.error("Erreur API:", err);
+                console.error("API Error:", err);
                 setProducts(MOCK_PRODUCTS);
                 setFilteredProducts(MOCK_PRODUCTS);
                 setPriceCeiling(200);
@@ -170,8 +170,8 @@ const Shop = ({ newArrivals = false }) => {
         fetchProducts();
     }, [genderParam, newArrivals]);
 
-    // options de la case a cocher "Brand" : derivees des marques reelles des produits
-    // charges (au lieu d'une seule case "Red Store" qui ne filtrait jamais rien)
+    // "Brand" checkbox options: derived from the actual brands of loaded products
+    // (instead of a single "Red Store" checkbox that never filtered anything)
     const availableBrands = useMemo(
         () => [...new Set(products.map((p) => p.brand).filter(Boolean))].sort(),
         [products]
@@ -185,12 +185,12 @@ const Shop = ({ newArrivals = false }) => {
             );
         }
         if (selectedSizes.length > 0) {
-            // Product.sizes vient de l'API sous forme [{ size, stock }, ...] mais
-            // MOCK_PRODUCTS utilise des nombres bruts [40, 41, ...]. Pour les objets,
-            // une pointure en rupture de stock (stock: 0) ne compte pas comme
-            // "disponible" : sans le garde stock > 0, filtrer par une pointure que
-            // TOUS les produits possedent (meme a 0 en stock) ne changeait jamais
-            // le nombre de resultats affiches.
+            // Product.sizes comes from the API as [{ size, stock }, ...] but
+            // MOCK_PRODUCTS uses raw numbers [40, 41, ...]. For objects,
+            // a size out of stock (stock: 0) does not count as
+            // "available": without the stock > 0 guard, filtering by a size that
+            // ALL products have (even at 0 stock) never changed
+            // the number of displayed results.
             result = result.filter(
                 (p) =>
                     p.sizes &&
@@ -203,7 +203,7 @@ const Shop = ({ newArrivals = false }) => {
         }
         result = result.filter((p) => p.price <= maxPrice);
 
-        // Le tri ne change jamais le nombre de resultats, seulement leur ordre.
+        // Sorting never changes the number of results, only their order.
         result = result.sort((a, b) => {
             switch (sortBy) {
                 case "price-asc":
@@ -213,9 +213,9 @@ const Shop = ({ newArrivals = false }) => {
                 case "newest":
                     return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
                 case "popularity":
-                    // Le schema Product n'a pas encore de compteur de ventes/vues :
-                    // en attendant une vraie metrique cote backend, on garde l'ordre
-                    // d'origine plutot que d'inventer un classement.
+                    // The Product schema does not yet have a sales/views counter:
+                    // until a real metric is available on the backend side, we keep
+                    // the original order rather than inventing a ranking.
                     return 0;
                 default:
                     return 0;

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: lazher789/redstore-frontend:latest
+        image: YOUR_DOCKERHUB_USERNAME/redstore-frontend:latest
         ports:
         - containerPort: 80
         volumeMounts:

@@ -1,10 +1,10 @@
-/* --- Footer Principal --- */
+/* --- Main Footer --- */
 .red-footer {
-    /* tokens locaux : le footer garde son fond sombre, on ne les partage pas avec le theme clair */
+    /* Local tokens: footer keeps its dark background, not shared with light theme */
     --footer-bg: #1D1D1D;
     --footer-surface: #2A2A2A;
     --footer-line: #333333;
-    /* #6C757D sur #1D1D1D ne fait que ~3.6:1 (sous AA) ; ce gris passe AA (~7:1) */
+    /* #6C757D on #1D1D1D is only ~3.6:1 (below AA); this grey passes AA (~7:1) */
     --footer-muted: #A0A7AE;
 
     position: relative;
@@ -13,8 +13,8 @@
     padding: var(--space-8) var(--space-3) var(--space-3);
 }
 
-/* filet degrade en haut : separe proprement le footer de la section claire
-   (Testimonials) qui le precede, sans ajouter une bordure pleine largeur */
+/* Gradient border on top: cleanly separates footer from previous light section
+   (Testimonials), without adding an abrupt full-width border */
 .red-footer::before {
     content: "";
     position: absolute;
@@ -29,19 +29,19 @@
     max-width: 1200px;
     margin: 0 auto;
     display: grid;
-    /* marque et newsletter plus larges que les 3 colonnes de liens */
+    /* Brand and newsletter wider than the 3 link columns */
     grid-template-columns: 1.5fr 1fr 1fr 1fr 1.5fr;
     gap: var(--space-4);
 }
 
-/* --- Colonnes --- */
+/* --- Columns --- */
 .red-footer__col {
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
 }
 
-/* --- Logo et textes --- */
+/* --- Logo and text --- */
 .red-footer__brand {
     font-size: 1.5rem;
     font-weight: 800;
@@ -59,7 +59,7 @@
     line-height: 1.6;
 }
 
-/* --- Titres de colonnes --- */
+/* --- Column titles --- */
 .red-footer__col h4 {
     font-size: 1rem;
     font-weight: 700;
@@ -69,8 +69,8 @@
     letter-spacing: 0.05em;
 }
 
-/* --- Liens (uniquement les liens directs de colonne : les icones sociales
-   ont leur propre style plus bas) --- */
+/* --- Links (only direct column links: social icons
+   have their own style below) --- */
 .red-footer__col > a {
     color: var(--footer-muted);
     text-decoration: none;
@@ -144,7 +144,7 @@
     margin: 0;
 }
 
-/* --- Reseaux sociaux --- */
+/* --- Social networks --- */
 .red-footer__social {
     display: flex;
     gap: var(--space-1);
@@ -165,7 +165,7 @@
         border-color var(--transition), transform var(--transition);
 }
 
-/* :hover ET :focus-visible : le clavier voit le meme retour que la souris */
+/* :hover AND :focus-visible: keyboard receives same visual feedback as mouse */
 .red-footer__social a:hover,
 .red-footer__social a:focus-visible {
     color: #FFFFFF;
@@ -178,7 +178,7 @@
     transform: scale(0.96);
 }
 
-/* --- Bas de page : copyright + moyens de paiement --- */
+/* --- Bottom bar: copyright + payment methods --- */
 .red-footer__bottom {
     max-width: 1200px;
     margin: var(--space-6) auto 0;
@@ -218,7 +218,7 @@
     background: var(--footer-surface);
 }
 
-/* --- Tablette : marque et newsletter pleine largeur, 3 colonnes de liens --- */
+/* --- Tablet: brand and newsletter full width, 3 link columns --- */
 @media (max-width: 1024px) {
     .red-footer__container {
         grid-template-columns: repeat(3, 1fr);
@@ -235,7 +235,7 @@
     }
 }
 
-/* --- Mobile : une seule colonne, espacement genereux --- */
+/* --- Mobile: single column, generous spacing --- */
 @media (max-width: 640px) {
     .red-footer {
         padding: var(--space-6) var(--space-3) var(--space-3);
@@ -246,7 +246,7 @@
         gap: var(--space-6);
     }
 
-    /* cibles tactiles confortables pour les liens empiles */
+    /* Comfortable touch targets for stacked links */
     .red-footer__col > a {
         display: inline-flex;
         align-items: center;

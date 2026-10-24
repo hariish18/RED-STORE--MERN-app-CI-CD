@@ -4,18 +4,18 @@ const Product = require("../model/Product");
 const PaymentIntent = require("../model/PaymentIntent");
 const { getStripe } = require("../util/stripe");
 
-// meme regles de calcul que frontend/src/JS/selectors/cart.selectors.js : dupliquees ici
-// volontairement car backend/ et frontend/ sont deux projets npm independants (voir CLAUDE.md)
+// Same calculation rules as frontend/src/JS/selectors/cart.selectors.js: duplicated here
+// intentionally because backend/ and frontend/ are independent npm projects (see CLAUDE.md)
 const TAX_RATE = 0.07;
 const SHIPPING_COST = 12;
 const FREE_SHIPPING_THRESHOLD = 150;
 
-// genere un numero de commande lisible et impossible a deviner (RS- + 64 bits aleatoires) :
-// evite a la fois les collisions entre requetes concurrentes et l'enumeration de commandes
-// d'autres clients via getOrderByNumber
+// Generates readable, unguessable order number (RS- + 64 random bits):
+// avoids collisions between concurrent requests and prevents enumerating other customers'
+// orders via getOrderByNumber
 const generateOrderNumber = () => `RS-${crypto.randomBytes(8).toString("hex").toUpperCase()}`;
 
-//create order
+// create order
 exports.createOrder = async (req, res) => {
     try {
         const { items, shippingInfo, payment } = req.body;
@@ -24,8 +24,8 @@ exports.createOrder = async (req, res) => {
             return res.status(400).json({ msg: "Cart is empty" });
         }
 
-        //recalcule le prix cote serveur a partir des produits reels : le client ne peut pas
-        //falsifier subtotal/tax/shipping/total ni le prix d'un article
+        // Recalculates price on server from real products: client cannot
+        // forge subtotal/tax/shipping/total or item price
         const products = await Product.find({ _id: { $in: items.map((i) => i.productId) } });
         const productsById = new Map(products.map((p) => [p.id, p]));
 
@@ -54,9 +54,9 @@ exports.createOrder = async (req, res) => {
         const shipping = subtotal === 0 || subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
         const total = subtotal + tax + shipping;
 
-        //verifie que le paiement fourni correspond a un PaymentIntent reellement approuve par
-        ///api/payment/process, non deja consomme, et pour le bon montant - le statut envoye par
-        //le client (req.body.payment.status) n'est jamais fait confiance
+        // Verifies that provided payment corresponds to a PaymentIntent actually approved by
+        // /api/payment/process, not already consumed, and for the correct amount - client-sent
+        // status (req.body.payment.status) is never trusted
         const transactionId = payment?.transactionId;
         if (!transactionId) {
             return res.status(400).json({ msg: "Missing payment confirmation" });
@@ -90,8 +90,8 @@ exports.createOrder = async (req, res) => {
             await intent.save();
         }
 
-        //decremente le stock de chaque pointure commandee, en parallele, avec verification
-        //atomique du stock disponible (evite la survente en cas de commandes concurrentes)
+        // Decrements stock for each ordered size in parallel with atomic check
+        // on available stock (avoids overselling in concurrent orders)
         const decrementResults = await Promise.all(
             orderItems.map((item) =>
                 Product.updateOne(
@@ -104,7 +104,7 @@ exports.createOrder = async (req, res) => {
 
         const failedIndex = decrementResults.findIndex((r) => r.matchedCount === 0);
         if (failedIndex !== -1) {
-            //rollback des decrements deja effectues avant l'echec
+            // Rollback decrements already completed before the failure
             await Promise.all(
                 decrementResults.map((r, i) =>
                     r.matchedCount === 1
@@ -139,7 +139,7 @@ exports.createOrder = async (req, res) => {
     }
 };
 
-//recupere toutes les commandes de l'utilisateur connecte (page profil)
+// Retrieves all orders for authenticated user (profile page)
 exports.getMyOrders = async (req, res) => {
     try {
         const orders = await Order.find({ createdBy: req.user._id })
@@ -151,9 +151,9 @@ exports.getMyOrders = async (req, res) => {
     }
 };
 
-//get order by order number (confirmation page) : accessible sans compte (checkout invite),
-//mais si la commande appartient a un compte, seul ce compte peut la consulter - le numero
-//aleatoire (voir generateOrderNumber) sert de "capability URL" pour les invites
+// get order by order number (confirmation page): accessible without account (guest checkout),
+// but if order belongs to an account, only that account can view it - random number
+// (see generateOrderNumber) acts as capability URL for guests
 exports.getOrderByNumber = async (req, res) => {
     try {
         const { orderNumber } = req.params;

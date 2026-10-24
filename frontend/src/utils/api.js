@@ -1,5 +1,5 @@
-// URL de base de l'API : vide par défaut pour des appels relatifs (/api/...), servis par le proxy
-// Vite en dev et par Nginx en Docker. VITE_API_URL ne sert que si l'API est sur une autre origine.
+// Base API URL: empty by default for relative calls (/api/...), served by the proxy
+// Vite in dev and by Nginx in Docker. VITE_API_URL is only used if the API is on a different origin.
 export const API_URL = import.meta.env.VITE_API_URL || "";
 
 export const getAuthHeaders = () => {

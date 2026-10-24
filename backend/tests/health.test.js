@@ -2,7 +2,7 @@ const request = require("supertest");
 const app = require("../app");
 
 describe("GET /api/health", () => {
-    it("répond 200 avec la base connectée", async () => {
+    it("responds 200 when database is connected", async () => {
         const res = await request(app).get("/api/health");
 
         expect(res.status).toBe(200);
@@ -13,7 +13,7 @@ describe("GET /api/health", () => {
         expect(Number.isNaN(Date.parse(res.body.timestamp))).toBe(false);
     });
 
-    it("n'expose aucune information sensible", async () => {
+    it("does not expose any sensitive information", async () => {
         const res = await request(app).get("/api/health");
 
         expect(Object.keys(res.body).sort()).toEqual(["db", "status", "timestamp", "uptime", "version"]);

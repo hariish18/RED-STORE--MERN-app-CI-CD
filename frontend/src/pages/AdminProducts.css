@@ -53,7 +53,7 @@
     margin-left: 2px;
 }
 
-/* --- bouton fichier custom, remplace le style natif de <input type="file"> --- */
+/* --- Custom file button, replaces native <input type="file"> style --- */
 
 .admin-products__file {
     position: relative;
@@ -81,8 +81,8 @@
     outline-offset: 2px;
 }
 
-/* input reel garde accessible (focus clavier, lecteur d'ecran) mais visuellement masque :
-   pas de display:none, qui le sortirait du flux de tabulation */
+/* Real input kept accessible (keyboard focus, screen reader) but visually hidden:
+   no display:none, which would remove it from tab flow */
 .admin-products__file-input {
     position: absolute;
     width: 1px;

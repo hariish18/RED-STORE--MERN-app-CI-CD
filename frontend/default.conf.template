@@ -1,9 +1,9 @@
-# Rendu au démarrage par l'image nginx (envsubst) : seules les variables d'environnement
-# définies sont remplacées (${BACKEND_URL}, ${NGINX_LOCAL_RESOLVERS}), pas $uri, $host...
+# Rendered at startup by nginx image (envsubst): only defined environment
+# variables are replaced (${BACKEND_URL}, ${NGINX_LOCAL_RESOLVERS}), not $uri, $host...
 #
-# BACKEND_URL = schéma + hôte (+ port), SANS slash final ni chemin :
-#   - local  : http://backend:1980
-#   - Render : https://xxx.onrender.com
+# BACKEND_URL = scheme + host (+ port), WITHOUT trailing slash or path:
+#   - local:  http://backend:1980
+#   - Render: https://xxx.onrender.com
 
 server {
     listen 80;
@@ -12,11 +12,11 @@ server {
     root /usr/share/nginx/html;
     index index.html;
 
-    # Redirections relatives (ex. /api -> /api/) : garde le port publié (8080) côté navigateur
+    # Relative redirects (e.g. /api -> /api/): preserves published port (8080) on browser side
     absolute_redirect off;
 
-    # DNS du conteneur (127.0.0.11 sous Docker) : le nom du backend est re-résolu
-    # régulièrement au lieu d'être figé au démarrage (les IP Render peuvent changer).
+    # Container DNS (127.0.0.11 under Docker): backend name is re-resolved
+    # periodically instead of being fixed at startup (Render IPs can change).
     resolver ${NGINX_LOCAL_RESOLVERS} valid=30s ipv6=off;
     resolver_timeout 5s;
 
@@ -27,10 +27,10 @@ server {
     gzip_min_length 1024;
     gzip_types text/plain text/css text/javascript application/javascript application/json image/svg+xml;
 
-    # API -> backend Express (même origine pour le navigateur : pas de CORS)
+    # API -> Express backend (same origin for browser: no CORS needed)
     location /api/ {
-        # Passer par une variable force la résolution DNS dynamique via "resolver".
-        # Sans chemin dans l'URL, l'URI d'origine (/api/...) est transmise telle quelle.
+        # Using a variable forces dynamic DNS resolution via "resolver".
+        # Without a path in the URL, original URI (/api/...) is passed as-is.
         set $backend_url ${BACKEND_URL};
         proxy_pass $backend_url;
 
@@ -44,20 +44,20 @@ server {
         client_max_body_size 10M;
     }
 
-    # Fichiers Vite hashés : cache long et immuable
+    # Hashed Vite assets: long and immutable cache
     location /assets/ {
         expires 1y;
         add_header Cache-Control "public, immutable";
         try_files $uri =404;
     }
 
-    # index.html jamais mis en cache, pour que chaque déploiement soit pris en compte
+    # index.html never cached, ensuring each deployment takes effect immediately
     location = /index.html {
         add_header Cache-Control "no-cache, no-store, must-revalidate";
         expires off;
     }
 
-    # React Router : toute route inconnue renvoie index.html
+    # React Router: any unknown route serves index.html (SPA fallback)
     location / {
         try_files $uri $uri/ /index.html;
     }

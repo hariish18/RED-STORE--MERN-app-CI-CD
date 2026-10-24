@@ -14,8 +14,8 @@ export default function Contact() {
 
     const handleChange = (field) => (e) => setData({ ...data, [field]: e.target.value });
 
-    // pas d'endpoint de contact cote backend pour l'instant : validation
-    // client uniquement, l'envoi est simule localement
+    // no contact endpoint on the backend yet: client-side validation
+    // only, the submission is simulated locally
     const handleSubmit = (e) => {
         e.preventDefault();
         const validationErrors = validateContact(data);

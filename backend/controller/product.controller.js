@@ -4,7 +4,7 @@ const { destroyProductImages } = require("../util/productImages")
 const getAnthropicClient = require("../util/anthropic")
 const Anthropic = require("@anthropic-ai/sdk")
 
-//upload l'image principale (champ "imageProd") et la galerie (champ "images") vers cloudinary
+// Upload main image ("imageProd" field) and gallery ("images" field) to cloudinary
 const uploadProductImages = async (files) => {
     const result = {};
     if (files?.imageProd?.[0]) {
@@ -20,7 +20,7 @@ const uploadProductImages = async (files) => {
     return result;
 };
 
-//les requetes multipart (upload de fichier) envoient "sizes" en JSON stringifie
+// Multipart requests (file upload) send "sizes" as stringified JSON
 const parseBody = (body) => {
     if (typeof body.sizes === "string") {
         try {
@@ -32,14 +32,14 @@ const parseBody = (body) => {
     return body;
 };
 
-//add product
+// add product
 exports.addProduct = async (req, res) => {
 
     try {
         const uploaded = await uploadProductImages(req.files);
-        //construction du document  produit
+        // Construct product document
         const newProd = new Product({ ...parseBody(req.body), ...uploaded, createdBy: req.user._id })
-        //sauvegarde dans le BD
+        // Save to database
         await newProd.save()
         res.status(201).json({ msg: "product created successfully", newProd })
 
@@ -49,28 +49,28 @@ exports.addProduct = async (req, res) => {
     }
 
 };
+
 // getAll
 exports.getAllProd = async (req, res) => {
 
     try {
-        // filtre optionnel par genre / categorie (?gender=men&category=shoes)
+        // Optional filter by gender / category (?gender=men&category=shoes)
         const filter = {};
         if (req.query.gender) filter.gender = req.query.gender;
         if (req.query.category) filter.category = req.query.category;
-        //filtre optionnel pour la page "Sale" (?onSale=true)
+        // Optional filter for "Sale" page (?onSale=true)
         if (req.query.onSale === "true") filter.isOnSale = true;
         let query = Product.find(filter);
 
-        //tri optionnel (?sort=newest) : les plus recents d'abord, pour la section "New Arrivals"
+        // Optional sort (?sort=newest): newest first, for "New Arrivals" section
         if (req.query.sort === "newest") query = query.sort({ createdAt: -1 });
 
-        //limite optionnelle (?limit=8), sans impact sur les appels existants qui ne la passent pas
+        // Optional limit (?limit=8), no impact on existing calls that don't pass it
         const limit = Number(req.query.limit);
         if (Number.isInteger(limit) && limit > 0) query = query.limit(limit);
 
         const Prod = await query;
         res.status(200).json({ msg: "Products:", Prod })
-
 
     } catch (error) {
         console.error("❌ getAllProd error:", error.message, error.stack);
@@ -79,10 +79,10 @@ exports.getAllProd = async (req, res) => {
 
 };
 
-//search : ?q=... filtre insensible a la casse, "contient" sur le NOM et la MARQUE uniquement.
-//Pas de recherche dans la description (ni la categorie, "shoes" partout) : avec 1 lettre (ex "l"),
-//un texte long la contient presque toujours ("leather", "lightweight"...) et TOUS les produits
-//remontaient dans l'ordre de la base -> la navbar affichait toujours les 5 memes produits.
+// search: ?q=... case-insensitive filter, "contains" on TITLE and BRAND only.
+// No search in description (nor category, "shoes" everywhere): with 1 letter (e.g. "l"),
+// long text almost always contains it ("leather", "lightweight"...) causing ALL products
+// to return in db order -> navbar was always displaying the same 5 products.
 exports.searchProd = async (req, res) => {
     try {
         const q = (req.query.q || "").trim();
@@ -92,11 +92,11 @@ exports.searchProd = async (req, res) => {
         const contains = new RegExp(escaped, "i");
         const Prod = await Product.find({ $or: [{ title: contains }, { brand: contains }] });
 
-        //tri par pertinence, puis alphabetique a pertinence egale :
-        // 0 = le nom commence par q
-        // 1 = la marque commence par q
-        // 2 = un mot du nom/de la marque commence par q (apres espace, tiret, point, slash)
-        // 3 = q apparait n'importe ou dans le nom/la marque
+        // Sort by relevance, then alphabetical if relevance is equal:
+        // 0 = title starts with q
+        // 1 = brand starts with q
+        // 2 = a word in title/brand starts with q (after space, dash, dot, slash)
+        // 3 = q appears anywhere in title/brand
         const startsWith = new RegExp(`^${escaped}`, "i");
         const wordStart = new RegExp(`[\\s\\-./]${escaped}`, "i");
         const rank = (p) => {
@@ -115,7 +115,7 @@ exports.searchProd = async (req, res) => {
     }
 };
 
-//getOne
+// getOne
 exports.getOneProd = async (req, res) => {
 
     try {
@@ -124,10 +124,9 @@ exports.getOneProd = async (req, res) => {
         if (!prodToGet) return res.status(404).json({ msg: 'Product not found' })
         res.status(200).json({ msg: "The product is:", prodToGet })
 
-
     } catch (error) {
-        // id malformé (pas un ObjectId Mongo valide, ex. un id placeholder jamais remplacé
-        // cote frontend) : 400, pas 500 - ce n'est pas une erreur serveur
+        // Malformed id (not a valid Mongo ObjectId, e.g. placeholder id never replaced
+        // on frontend): 400, not 500 - not a server error
         if (error.name === "CastError") {
             return res.status(400).json({ msg: "Invalid product id" });
         }
@@ -136,6 +135,7 @@ exports.getOneProd = async (req, res) => {
     }
 
 };
+
 // getmyprod
 exports.getMyProd = async (req, res) => {
     try {
@@ -148,18 +148,19 @@ exports.getMyProd = async (req, res) => {
     }
 
 }
-//update my product 
+
+// update my product 
 exports.updateMyProd = async (req, res) => {
     try {
-        // recuperer id a partir de la requete 
+        // Retrieve id from request
         const { id } = req.params;
-        //chercher le produit dans ma collection 
+        // Find product in collection
         const foundProd = await Product.findById(id);
         if (!foundProd) return res.status(404).json({ msg: "Product not found" });
         if (foundProd.createdBy.toString() !== req.user._id.toString())
             return res.status(403).json({ msg: "you can't update this prod" });
         const uploaded = await uploadProductImages(req.files);
-        //mise a jour
+        // Update
         const prodToUpdate = await Product.findByIdAndUpdate(
             id,
             { ...parseBody(req.body), ...uploaded },
@@ -173,20 +174,21 @@ exports.updateMyProd = async (req, res) => {
     }
 
 };
-//genere (ou ameliore) une description produit via Claude a partir des infos fournies
+
+// Generates (or enhances) a product description via Claude using provided info
 exports.generateDescription = async (req, res) => {
     try {
         const { title, category, brand, gender, price, keywords, draft } = req.body;
         if (!title) return res.status(400).json({ msg: "title is required" });
 
         const details = [
-            `Titre: ${title}`,
-            category && `Categorie: ${category}`,
-            brand && `Marque: ${brand}`,
-            gender && `Genre: ${gender}`,
-            price && `Prix: ${price} EUR`,
-            Array.isArray(keywords) && keywords.length && `Mots-cles: ${keywords.join(", ")}`,
-            draft && `Brouillon existant a ameliorer: ${draft}`,
+            `Title: ${title}`,
+            category && `Category: ${category}`,
+            brand && `Brand: ${brand}`,
+            gender && `Gender: ${gender}`,
+            price && `Price: ${price} EUR`,
+            Array.isArray(keywords) && keywords.length && `Keywords: ${keywords.join(", ")}`,
+            draft && `Existing draft to improve: ${draft}`,
         ].filter(Boolean).join("\n");
 
         const anthropic = getAnthropicClient();
@@ -195,11 +197,11 @@ exports.generateDescription = async (req, res) => {
             max_tokens: 1024,
             output_config: { effort: "medium" },
             system:
-                "Tu es un copywriter e-commerce specialise dans la chaussure et la mode. " +
-                "A partir des informations produit fournies, redige une description produit en " +
-                "francais: 2 a 4 phrases vendeuses puis 3 a 5 points cles sous forme de liste a puces. " +
-                "N'invente aucune caracteristique (matiere, garantie, origine...) qui n'est pas fournie " +
-                "dans les informations. Reponds uniquement avec la description, sans preambule ni titre.",
+                "You are an e-commerce copywriter specializing in footwear and fashion. " +
+                "Based on the provided product information, write a product description in " +
+                "English: 2 to 4 compelling sentences followed by 3 to 5 key bullet points. " +
+                "Do not invent any characteristics (materials, warranty, origin...) not provided " +
+                "in the information. Respond only with the description, without preamble or title.",
             messages: [{ role: "user", content: details }],
         });
 
@@ -222,25 +224,24 @@ exports.generateDescription = async (req, res) => {
     }
 };
 
-//delete
+// delete
 exports.deleteProd = async (req, res) => {
     try {
-        // recuperer id a partir de la requete
+        // Retrieve id from request
         const { id } = req.params;
-        //chercher le produit dans ma collection
+        // Find product in collection
         const prodToFind = await Product.findById(id);
         if (!prodToFind) return res.status(404).json({ msg: "Product not found" });
         if (prodToFind.createdBy.toString() !== req.user._id.toString()) {
-            return res.status(403).json({ msg: "tu n'a pas le droit de supprimer ce produit!" });
+            return res.status(403).json({ msg: "You are not authorized to delete this product!" });
         }
 
-        //supprime les images (principale + galerie) sur Cloudinary pour ne pas les laisser
-        //orphelines - au mieux (une erreur cote Cloudinary ne doit pas bloquer la suppression
-        //du produit, qui reste l'action principale demandee par l'utilisateur)
+        // Delete images (main + gallery) on Cloudinary so they are not orphaned
+        // Best effort: a Cloudinary error must not block product deletion, which is the user's primary action
         await destroyProductImages(prodToFind);
 
         await Product.findByIdAndDelete(id);
-        res.status(200).json({ msg: "produit supprimé!", prodToFind });
+        res.status(200).json({ msg: "Product deleted!", prodToFind });
 
     } catch (error) {
         console.error("❌ deleteProd error:", error.message, error.stack);

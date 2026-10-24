@@ -18,7 +18,7 @@ function PaymentStep({ cardError, onNext, onBack, children }) {
             <h3>Payment</h3>
 
             <p className="checkout-form__hint text-small home__muted">
-                Paiement sécurisé par Stripe. Carte test : <strong>4242 4242 4242 4242</strong>
+                Secured payment by Stripe. Test card: <strong>4242 4242 4242 4242</strong>
             </p>
 
             <label className="stripe-card-label">

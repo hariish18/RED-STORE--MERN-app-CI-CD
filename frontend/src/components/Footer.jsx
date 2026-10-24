@@ -3,8 +3,8 @@ import AnimatedLink from "./AnimatedLink";
 import SocialLinks from "./SocialLinks";
 import "./Footer.css";
 
-// icones generiques (pas de logos de marques de paiement) : le nom du moyen de
-// paiement est ecrit en clair a cote d'un pictogramme neutre
+// generic icons (no payment brand logos): the payment method name is written
+// in plain text next to a neutral pictogram
 const PAYMENT_METHODS = [
     {
         label: "Visa",
@@ -107,7 +107,7 @@ function Footer() {
             </div>
 
             <div className="red-footer__bottom">
-                <p className="text-small">©2026 RedStore. Tous droits réservés.</p>
+                <p className="text-small">©2026 RedStore. All rights reserved.</p>
                 <ul className="red-footer__payments" aria-label="Accepted payment methods">
                     {PAYMENT_METHODS.map(({ label, icon }) => (
                         <li key={label} className="red-footer__payment">

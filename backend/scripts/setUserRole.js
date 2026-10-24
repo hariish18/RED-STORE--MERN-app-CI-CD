@@ -1,8 +1,8 @@
-// Script ponctuel : change le role d'un utilisateur via son email. Necessaire
-// pour tester le dashboard admin (aucune UI ne permet de se promouvoir
-// soi-meme, et aucun compte n'a le role "admin" par defaut).
+// Utility script: changes a user's role via email. Required
+// for testing admin dashboard (no UI allows self-promotion,
+// and no account has "admin" role by default).
 //
-// Usage : node scripts/setUserRole.js you@example.com admin
+// Usage: node scripts/setUserRole.js you@example.com admin
 
 require("dotenv").config({ path: require("path").resolve(__dirname, "../.env") });
 
@@ -14,11 +14,11 @@ const [, , email, role = "admin"] = process.argv;
 
 const setRole = async () => {
     if (!email) {
-        console.error("Usage : node scripts/setUserRole.js you@example.com [role]");
+        console.error("Usage: node scripts/setUserRole.js you@example.com [role]");
         process.exit(1);
     }
     if (!["client", "admin"].includes(role)) {
-        console.error(`Role invalide : "${role}" (attendu "client" ou "admin")`);
+        console.error(`Invalid role: "${role}" (expected "client" or "admin")`);
         process.exit(1);
     }
 
@@ -27,7 +27,7 @@ const setRole = async () => {
     const user = await User.findOneAndUpdate({ email }, { $set: { role } }, { returnDocument: "after" });
 
     if (!user) {
-        console.log(`Introuvable : ${email}`);
+        console.log(`Not found: ${email}`);
     } else {
         console.log(`${user.email} -> role: ${user.role}`);
     }
@@ -37,6 +37,6 @@ const setRole = async () => {
 };
 
 setRole().catch((error) => {
-    console.error("Le script a echoue :", error);
+    console.error("Script failed:", error);
     process.exit(1);
 });

@@ -1,22 +1,22 @@
-/* Conteneur principal - Fond rose clair */
+/* Main container - Light pink background */
 .hero-section {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* 2 colonnes sur ordinateur */
+    grid-template-columns: 1fr 1fr; /* 2 columns on desktop */
     align-items: center;
-    min-height: 100vh; /* Prend toute la hauteur de l'écran */
+    min-height: 100vh; /* Takes up full screen height */
     
-    /* IMPORTANT : Pour laisser la place à la Navbar fixe */
+    /* IMPORTANT: To leave room for the fixed Navbar */
     padding: 120px 80px 40px 80px; 
     
     background: linear-gradient(to right, #fceceb, #f8e4e2);
     overflow: hidden;
-     padding-bottom: 80px; /* Plus d'espace en bas pour la transition */
-    margin-bottom: -10px; /* Tire légèrement la section suivante vers le haut */
+     padding-bottom: 80px; /* More space at the bottom for the transition */
+    margin-bottom: -10px; /* Slightly pulls the next section upward */
 
 }
 
 
-/* Partie Texte (Gauche) */
+/* Text Area (Left) */
 .hero-content {
     padding-right: 40px;
     display: flex;
@@ -24,9 +24,9 @@
     gap: 25px;
 }
 
-/* --- BANDEAU NOUVELLE COLLECTION OPTIMISÉ --- */
+/* --- OPTIMIZED NEW COLLECTION BANNER --- */
 .hero-eyebrow {
-    display: inline-flex;      /* CHANGEMENT CRUCIAL : inline-flex au lieu de flex */
+    display: inline-flex;      /* CRITICAL CHANGE: inline-flex instead of flex */
     flex-direction: column;
     align-items: flex-start;
     gap: 6px;
@@ -42,7 +42,7 @@
     line-height: 1;
 }
 
-/* Ligne décorative rouge */
+/* Red decorative line */
 .hero-eyebrow::after {
     content: "";
     display: block;
@@ -52,7 +52,7 @@
     border-radius: 1px;
 }
 
-/* (Optionnel) Animation d'agrandissement au survol */
+/* (Optional) Expand animation on hover */
 .hero-eyebrow:hover::after {
     width: 60px;
 }
@@ -64,7 +64,7 @@
     color: #000;
     line-height: 1.1;
     margin: 0;
-    text-transform: uppercase; /* Tout en majuscules pour l'impact */
+    text-transform: uppercase; /* All caps for impact */
     letter-spacing: 0.02em;
 }
 
@@ -75,7 +75,7 @@
     max-width: 450px;
 }
 
-/* Bouton rouge/orange */
+/* Red/orange button */
 .hero-btn {
     align-self: flex-start;
     background-color: #ff5e5e;
@@ -95,7 +95,7 @@
     transform: translateY(-3px);
 }
 
-/* Partie Image (Droite) */
+/* Image Area (Right) */
 .hero-image-container {
     display: flex;
     justify-content: center;
@@ -106,23 +106,23 @@
     max-width: 90%;
     height: auto;
 
-    /* Fusionne avec le fond rose (supprime le fond blanc de l'image) */
+    /* Blends with the pink background (removes white image background) */
     mix-blend-mode: multiply;
 
-    /* Ombre portée réaliste : contact serrée + diffusion douce pour l'effet flottant */
+    /* Realistic drop shadow: tight contact + soft diffusion for the floating effect */
     filter:
         drop-shadow(0 6px 10px rgba(0, 0, 0, 0.18))
         drop-shadow(0 16px 28px rgba(0, 0, 0, 0.12))
         drop-shadow(0 32px 48px rgba(0, 0, 0, 0.08));
 }
 
-/* --- Rendre le site responsive (Pour mobile) --- */
+/* --- Make the site responsive (For mobile) --- */
 @media (max-width: 900px) {
     .hero-section {
-        grid-template-columns: 1fr; /* SUR MOBILE : 1 seule colonne ! */
+        grid-template-columns: 1fr; /* ON MOBILE: 1 single column! */
         text-align: center;
         min-height: 100vh;
-        padding: 140px 20px 40px 20px; /* Un peu plus de padding en haut pour le menu burger */
+        padding: 140px 20px 40px 20px; /* A little more top padding for the burger menu */
     }
 
     .hero-content {

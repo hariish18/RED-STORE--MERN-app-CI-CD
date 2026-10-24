@@ -2,7 +2,7 @@ import Reveal from './Reveal';
 import { STATS } from '../utils/stats';
 import './StatsSection.css';
 
-// bandeau "chiffres cles", partage entre About.jsx et la Home.
+// "Key figures" banner, shared between About.jsx and Home.
 export default function StatsSection() {
     return (
         <section className="about-stats-section section">

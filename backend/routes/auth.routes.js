@@ -1,4 +1,3 @@
-//require
 const express = require("express");
 const rateLimit = require("express-rate-limit");
 const {
@@ -15,43 +14,40 @@ const {
     removeFromWishlist,
 } = require("../controller/auth.controller");
 const { registerValidation, validation, loginValidation } = require("../middlewares/validator");
-//instance du routeur d'express
+
 const router = express.Router();
 const isAuth = require("../middlewares/isAuth");
-
 const upload = require("../util/multer");
 
-// 🔒 Rate limiter pour la route de login uniquement (protection contre les attaques par force brute) :
-// ne doit pas s'appliquer a tout /api/auth, sinon des routes comme /current (appelee a chaque
-// montage de l'app) epuisent le quota et bloquent aussi register/login sans rapport avec un brute force
+// 🔒 Rate limiter for login route only (protection against brute force attacks):
+// must not apply to all of /api/auth, otherwise routes like /current (called on every
+// app mount) exhaust quota and block register/login unrelated to brute force.
 //
-// `message` DOIT etre un objet (pas une string) : express-rate-limit fait res.send(message), et
-// Express ne serialise en JSON que si le body est un objet. Une string part en text/html, que le
-// frontend (extractAuthError, qui ne lit que {errors} / {message}) ne sait pas interpreter et qui
-// retombe alors sur le message generique "Something went wrong" sans aucune piste sur la vraie cause.
+// `message` MUST be an object (not a string): express-rate-limit calls res.send(message),
+// and Express only serializes to JSON if the body is an object. A string sends text/html,
+// which frontend error handler does not parse and falls back to a generic message.
 const loginLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5, // Limite à 5 tentatives par IP sur 15 minutes
+    max: 5, // Limit to 5 attempts per IP per 15 minutes
     message: { message: "Too many login attempts from this IP. Please try again in 15 minutes." },
     standardHeaders: true,
     legacyHeaders: false,
 });
 
-//routes
+// routes
 router.get("/test", (req, res) => {
     res.status(200).json({ message: "Test route is working!" });
 });
 
-
-//Register route === signup
+// Register route === signup
 router.post("/register", upload.single("imageProfile"), registerValidation(), validation, register);
-//Login route === signin
+// Login route === signin
 router.post("/login", loginLimiter, loginValidation(), validation, login);
 
-//current == user
+// current == user
 router.get("/current", isAuth, (req, res) => {
-    //personne connectée : reponse enveloppee dans "user" comme register/login,
-    //pour que authReducer (qui lit payload.user) fonctionne apres un refresh
+    // Logged-in user: response wrapped in "user" like register/login,
+    // so that authReducer (which reads payload.user) works after a refresh
     res.json({
         user: {
             name: req.user.name,
@@ -64,19 +60,19 @@ router.get("/current", isAuth, (req, res) => {
     });
 });
 
-//mise a jour du profil (nom, email, telephone, mot de passe)
+// Profile update (name, email, phone, password)
 router.patch("/profile", isAuth, updateProfile);
 
-//adresses de livraison enregistrees dans le profil
+// Delivery addresses saved in profile
 router.post("/addresses", isAuth, addAddress);
 router.patch("/addresses/:addressId", isAuth, updateAddress);
 router.delete("/addresses/:addressId", isAuth, deleteAddress);
 
-//reset de mot de passe
+// Password reset
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password/:token", resetPassword);
 
-//favoris (wishlist)
+// Wishlist
 router.get("/wishlist", isAuth, getWishlist);
 router.post("/wishlist/:productId", isAuth, addToWishlist);
 router.delete("/wishlist/:productId", isAuth, removeFromWishlist);

@@ -16,9 +16,9 @@ const Wishlist = () => {
     const { items, isLoad } = useSelector((state) => state.wishlistReducer);
 
     useEffect(() => {
-        // verifie le token en local (synchrone), pas `user` en Redux : `user` reste null le
-        // temps que current() (dispatche globalement par App.jsx) resolve apres un
-        // rechargement, ce qui renvoyait sinon a tort vers /login un utilisateur connecte
+        // checks the token locally (synchronous), not `user` in Redux: `user` stays null
+        // while current() (dispatched globally by App.jsx) resolves after a
+        // reload, which would otherwise wrongly redirect a logged-in user to /login
         if (!token) {
             navigate("/login", { replace: true });
             return;

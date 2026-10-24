@@ -62,9 +62,9 @@ export default {
                     4: "var(--chart-4)",
                     5: "var(--chart-5)",
                 },
-                // alias de marque supplementaires (n'entrent pas en collision avec les tokens
-                // shadcn ci-dessus) : primary/border restent volontairement sur var(--primary)/
-                // var(--border) pour ne rien changer au rendu des composants ui/** existants.
+                // Additional brand aliases (do not collide with shadcn tokens above):
+                // primary/border intentionally remain on var(--primary)/var(--border)
+                // to leave the rendering of existing ui/** components unchanged.
                 "primary-dark": "#C1121F",
                 surface: "#F8F9FA",
                 "text-primary": "#1D1D1D",

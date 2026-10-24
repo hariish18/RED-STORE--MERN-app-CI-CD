@@ -1,8 +1,8 @@
 .new-arrivals {
     background: var(--color-surface);
     padding: var(--space-6) 0 var(--space-8);
-    /* cible de #new-arrivals : la navbar est en position fixed (~85px), sans cette
-       marge le titre de la section passerait sous elle apres le scroll */
+    /* #new-arrivals scroll target: navbar is fixed (~85px), without this
+       margin the section title would be hidden under it after scrolling */
     scroll-margin-top: 80px;
 }
 
@@ -10,8 +10,8 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: var(--space-3);
-    /* espace le dernier rang de cards du bloc suivant (Testimonials), qui n'a
-       pas son propre padding-top */
+    /* Spaces the last row of cards from the following block (Testimonials), which has
+       no padding-top of its own */
     margin-bottom: var(--space-6);
 }
 
@@ -30,9 +30,9 @@
 .new-arrival-card {
     display: flex;
     flex-direction: column;
-    /* min-width:0 : sans ca, un item de grille refuse de descendre sous la largeur
-       intrinseque de son contenu (min-width:auto par defaut), ce qui casse la
-       troncature ellipsis du titre et peut deregler l'alignement de la grille */
+    /* min-width:0: without this, a grid item refuses to shrink below its intrinsic
+       content width (min-width:auto by default), which breaks ellipsis truncation
+       of title and can misalign the grid */
     min-width: 0;
     color: inherit;
     text-decoration: none;
@@ -63,8 +63,8 @@
     margin-bottom: var(--space-3);
 }
 
-/* varie le fond derriere l'image (visible pendant le chargement / sur les PNG
-   transparents) pour casser la repetition du meme degrade gris sur chaque card */
+/* Varies background behind image (visible during loading / on transparent
+   PNGs) to break repetition of identical grey gradient across every card */
 .new-arrival-card:nth-of-type(4n + 2) .new-arrival-card__image-wrapper {
     background: linear-gradient(160deg, #fdf2f1, #f2d4d1);
 }
@@ -141,9 +141,9 @@
     outline-offset: 2px;
 }
 
-/* coeur wishlist : en haut a droite de l'image, toujours visible (contrairement au
-   quick-add panier qui n'apparait qu'au survol) pour signaler l'etat sauvegarde meme
-   sans interaction */
+/* Wishlist heart: top right of image, always visible (unlike quick-add
+   cart button which only appears on hover) to indicate saved status even
+   without interaction */
 .new-arrival-card__wishlist-btn {
     position: absolute;
     top: var(--space-2);
@@ -176,9 +176,8 @@
     outline-offset: 2px;
 }
 
-/* occupe le reste de la hauteur de la card (etiree par la grille a la hauteur de la
-   rangee la plus haute) pour garder le prix toujours colle en bas, quelle que soit
-   la longueur du titre */
+/* Fills remaining height of card (stretched by grid to height of tallest
+   row item) to keep price pinned at bottom, regardless of title length */
 .new-arrival-card__info {
     display: flex;
     flex-direction: column;
@@ -192,9 +191,9 @@
     color: var(--color-text);
     line-height: 1.3;
     margin-bottom: 4px;
-    /* coupe proprement apres 2 lignes, sur un espace entre mots (jamais en
-       plein mot) ; min-height reserve la place des 2 lignes pour que les
-       titres courts et longs alignent quand meme le prix en bas de la grille */
+    /* Clamps cleanly after 2 lines, on a word boundary (never mid-word);
+       min-height reserves space for 2 lines so short and long titles
+       still align prices at the bottom of the grid */
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -251,7 +250,7 @@
     outline-offset: 3px;
 }
 
-/* --- skeleton (chargement) --- */
+/* --- skeleton (loading) --- */
 .new-arrival-card--skeleton {
     border-color: var(--color-border);
 }

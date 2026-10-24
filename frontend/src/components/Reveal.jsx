@@ -1,7 +1,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { EASE_SMOOTH } from "../utils/motion";
 
-// wrapper d'animation "fade + translate" au scroll, reutilisable sur toutes les sections
+// "Fade + translate" scroll animation wrapper, reusable across all sections
 function Reveal({ children, delay = 0, y = 24, className = "" }) {
     const shouldReduceMotion = useReducedMotion();
     return (

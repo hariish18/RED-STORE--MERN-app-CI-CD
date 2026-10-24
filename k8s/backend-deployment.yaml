@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: lazher789/redstore-backend:latest
+        image: YOUR_DOCKERHUB_USERNAME/redstore-backend:latest
         ports:
         - containerPort: 1980
         envFrom:

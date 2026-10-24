@@ -3,9 +3,9 @@ import { composeWithDevTools } from "@redux-devtools/extension";
 import { thunk } from "redux-thunk";
 import rootReducer from "../reducers/index";
 
-// DevTools actives uniquement en dev : import.meta.env.DEV est le flag natif
-// Vite (true avec `vite`/`vite dev`, false dans le build de prod), pour ne
-// jamais exposer le state Redux a un visiteur du site en ligne.
+// DevTools enabled only in dev: import.meta.env.DEV is the native Vite flag
+// (true with `vite`/`vite dev`, false in the prod build), to never
+// expose the Redux state to a visitor on the live site.
 const composeEnhancers = import.meta.env.DEV ? composeWithDevTools : compose;
 
 const store = createStore(

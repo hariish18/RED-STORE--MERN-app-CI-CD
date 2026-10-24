@@ -17,7 +17,7 @@ const STAT_CARDS = [
     { key: "totalRevenue", label: "Total Revenue", icon: DollarSign, format: formatPrice },
 ];
 
-//doit matcher ORDER_STATUSES cote backend (admin.controller.js)
+// must match ORDER_STATUSES on the backend side (admin.controller.js)
 const ORDER_STATUSES = ["pending", "processing", "shipped", "delivered", "cancelled"];
 
 const STATUS_META = {
@@ -40,8 +40,8 @@ export default function AdminDashboard() {
     const [orders, setOrders] = useState(null);
     const [ordersError, setOrdersError] = useState(null);
 
-    // meme garde que Wishlist.jsx : verifie le token en local (synchrone), pas seulement
-    // `user` en Redux, qui reste null le temps que current() (App.jsx) resolve apres un reload
+    // same guard as Wishlist.jsx: checks the token locally (synchronous), not just
+    // `user` in Redux, which stays null while current() (App.jsx) resolves after a reload
     useEffect(() => {
         if (!token) {
             navigate("/login", { replace: true });

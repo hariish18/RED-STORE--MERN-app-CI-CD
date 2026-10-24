@@ -1,4 +1,4 @@
-// ✅ Votre fichier corrigé
+// Class name helper combining clsx and tailwind-merge
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 

@@ -19,7 +19,7 @@
 
 body {
   margin: 0;
-  font-family: 'Poppins', sans-serif; /* Police principale du site */
+  font-family: 'Poppins', sans-serif; /* Main website font */
 }
 
 #root {
@@ -34,7 +34,7 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: 'Poppins', sans-serif; /* Harmonisé avec le body */
+  font-family: 'Poppins', sans-serif; /* Aligned with body font */
   color: var(--color-text);
   margin: 0;
 }
@@ -90,7 +90,7 @@ button {
   }
 }
 
-/* Titres de sections (utilisation dans CategoriesSection, ProductGrid, etc.) */
+/* Section titles (used in CategoriesSection, ProductGrid, etc.) */
 h2.section-title {
     font-size: 2rem;
     font-weight: 700;

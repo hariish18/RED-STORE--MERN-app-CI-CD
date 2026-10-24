@@ -1,5 +1,5 @@
-/* page produits du dashboard admin : reutilise les classes admin-dashboard__* (AdminDashboard.css)
-   pour la carte et le tableau, n'ajoute ici que ce qui est propre a la gestion produits */
+/* Admin dashboard products page: reuses admin-dashboard__* classes (AdminDashboard.css)
+   for the card and table, adding here only styles specific to product management */
 
 .admin-products__toolbar {
     display: flex;

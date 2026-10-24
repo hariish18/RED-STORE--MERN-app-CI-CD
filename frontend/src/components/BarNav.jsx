@@ -32,8 +32,8 @@ function BarNav() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
-    
-    // DÉTECTION DE LA PAGE ACTUELLE
+
+    // CURRENT PAGE DETECTION
     const isHome = location.pathname === '/';
 
     const [scrolled, setScrolled] = useState(false);
@@ -52,8 +52,8 @@ function BarNav() {
     useEffect(() => {
         const q = query.trim();
         if (!q) return;
-        // annule aussi la requete deja partie : sinon une reponse lente pour "l" peut
-        // arriver apres celle de "le" et ecraser les bonnes suggestions
+        // Also cancels in-flight request: otherwise a slow response for "l" could
+        // arrive after "le" and overwrite correct suggestions
         const controller = new AbortController();
         const timer = setTimeout(() => {
             axios
@@ -106,7 +106,7 @@ function BarNav() {
                     <span className="red-navbar__mark">R</span>
                     RED<span>STORE</span>
                 </Navbar.Brand>
-                
+
                 <Navbar.Toggle aria-controls="main-nav" className="red-navbar__toggle" />
                 <Navbar.Collapse id="main-nav" className="red-navbar__collapse">
                     <Nav className="red-navbar__links">

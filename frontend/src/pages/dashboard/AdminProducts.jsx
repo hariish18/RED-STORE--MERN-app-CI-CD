@@ -11,14 +11,14 @@ import { formatPrice } from "../../utils/format";
 import "./AdminDashboard.css";
 import "./AdminProducts.css";
 
-//doit matcher PRODUCTS_PAGE_SIZE / PRODUCT_GENDERS cote backend (admin.controller.js)
+// must match PRODUCTS_PAGE_SIZE / PRODUCT_GENDERS on the backend side (admin.controller.js)
 const PAGE_SIZE = 10;
 const GENDERS = ["men", "women", "kids", "unisex"];
 const LOW_STOCK = 5;
 
 const capitalize = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : "—");
 
-//modal generique : fond cliquable + Echap pour fermer
+// generic modal: clickable backdrop + Escape to close
 function Modal({ title, onClose, children }) {
     useEffect(() => {
         const onKey = (e) => e.key === "Escape" && onClose();
@@ -218,7 +218,7 @@ export default function AdminProducts() {
     const [editing, setEditing] = useState(null);
     const [deleting, setDeleting] = useState(null);
 
-    // meme garde que AdminDashboard.jsx
+    // same guard as AdminDashboard.jsx
     useEffect(() => {
         if (!token) {
             navigate("/login", { replace: true });
@@ -229,7 +229,7 @@ export default function AdminProducts() {
         }
     }, [token, user, navigate]);
 
-    //recherche debouncee : on ne refetch qu'apres 300ms sans frappe, et on revient page 1
+    // debounced search: only refetch after 300ms without typing, and go back to page 1
     useEffect(() => {
         const timer = setTimeout(() => {
             setQuery(search.trim());
@@ -246,7 +246,7 @@ export default function AdminProducts() {
             })
             .then(({ data }) => {
                 setError(null);
-                //la page courante a pu disparaitre (suppression du dernier produit de la page)
+                // the current page may have disappeared (deletion of the last product on the page)
                 if (data.page > data.pages) setPage(data.pages);
                 else setData(data);
             })

@@ -4,7 +4,7 @@ const isAuth = require("../middlewares/isAuth")
 const isRole = require("../middlewares/isRole")
 const upload = require("../util/multer")
 
-//accepte une image principale (imageProd) et jusqu'a 5 images de galerie (images)
+// Accepts a main image (imageProd) and up to 5 gallery images (images)
 const productImages = upload.fields([
     { name: "imageProd", maxCount: 1 },
     { name: "images", maxCount: 5 },
@@ -12,31 +12,22 @@ const productImages = upload.fields([
 
 const router = express.Router()
 
-
-// route test
-//router.get('/test', (req,res)=>{
-//  res.status(200).json("hello products route")
-//})
-
-//add product
-   router.post ('/addProd', isAuth, isRole("admin"), productImages, addProduct)
-   //generer une description produit via l'IA (Claude)
-   router.post('/generate-description', isAuth, isRole("admin"), generateDescription)
-   //get all des produits
-   router.get ('/allProd' , getAllProd)
-   router.get('/', getAllProd)
-   //recherche full-text (titre/description/categorie/marque)
-   router.get ('/search' , searchProd)
-   //get one
-   router.get("/prod/:id" , getOneProd)
-   //get myProd
+// add product
+router.post('/addProd', isAuth, isRole("admin"), productImages, addProduct)
+// Generate product description via AI (Claude)
+router.post('/generate-description', isAuth, isRole("admin"), generateDescription)
+// get all products
+router.get('/allProd', getAllProd)
+router.get('/', getAllProd)
+// Search (title/brand)
+router.get('/search', searchProd)
+// get one
+router.get("/prod/:id", getOneProd)
+// get myProd
 router.get("/myProd", isAuth, getMyProd)
-//update prod
+// update prod
 router.put("/:id", isAuth, isRole("admin"), productImages, updateMyProd)
-//delete prod
+// delete prod
 router.delete("/:id", isAuth, isRole("admin"), deleteProd)
-
-
-
 
 module.exports = router;
