@@ -12,7 +12,7 @@ COPY . .
 
 COPY --chmod=755 docker-entrypoint.sh  /usr/local/bin/docker-entrypoint.sh
 ARG APP_VERSION=dev
-ENV APP_VERSION=$APP_VERSION
+ENV APP_VERSION=${APP_VERSION}
 
 EXPOSE 1980
 
